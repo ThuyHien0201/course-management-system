@@ -3,20 +3,34 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Hệ thống Quản lý Đào tạo API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: courses
+    description: Quản lý khóa học
+  - name: classes
+    description: Quản lý lớp học
+  - name: sessions
+    description: Quản lý buổi học
+  - name: students
+    description: Quản lý học viên
+  - name: instructors
+    description: Quản lý giảng viên
+  - name: certificates
+    description: Cấp chứng chỉ
+  - name: dashboard
+    description: Thống kê tổng quan
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +38,598 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Tổng quan thống kê
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /courses:
+    get:
+      operationId: listCourses
+      tags: [courses]
+      summary: Danh sách khóa học
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+    post:
+      operationId: createCourse
+      tags: [courses]
+      summary: Tạo khóa học
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCourseBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+
+  /courses/{id}:
+    get:
+      operationId: getCourse
+      tags: [courses]
+      summary: Chi tiết khóa học
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Course detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+    put:
+      operationId: updateCourse
+      tags: [courses]
+      summary: Cập nhật khóa học
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCourseBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+    delete:
+      operationId: deleteCourse
+      tags: [courses]
+      summary: Xóa khóa học
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /classes:
+    get:
+      operationId: listClasses
+      tags: [classes]
+      summary: Danh sách lớp học
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: courseId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of classes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClassWithDetails"
+    post:
+      operationId: createClass
+      tags: [classes]
+      summary: Tạo lớp học
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateClassBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClassWithDetails"
+
+  /classes/{id}:
+    get:
+      operationId: getClass
+      tags: [classes]
+      summary: Chi tiết lớp học
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Class detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClassWithDetails"
+    put:
+      operationId: updateClass
+      tags: [classes]
+      summary: Cập nhật lớp học
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateClassBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClassWithDetails"
+    delete:
+      operationId: deleteClass
+      tags: [classes]
+      summary: Xóa lớp học
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /classes/{classId}/sessions:
+    get:
+      operationId: listClassSessions
+      tags: [sessions]
+      summary: Danh sách buổi học của lớp
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Session"
+    post:
+      operationId: createSession
+      tags: [sessions]
+      summary: Tạo buổi học
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+
+  /classes/{classId}/sessions/{sessionId}:
+    put:
+      operationId: updateSession
+      tags: [sessions]
+      summary: Cập nhật buổi học
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+    delete:
+      operationId: deleteSession
+      tags: [sessions]
+      summary: Xóa buổi học
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /classes/{classId}/students:
+    get:
+      operationId: listClassStudents
+      tags: [classes]
+      summary: Danh sách học viên trong lớp
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of students in class
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClassStudentDetail"
+
+  /students:
+    get:
+      operationId: listStudents
+      tags: [students]
+      summary: Danh sách học viên
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: classId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudentWithDetails"
+    post:
+      operationId: createStudent
+      tags: [students]
+      summary: Tạo học viên
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStudentBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentWithDetails"
+
+  /students/{id}:
+    get:
+      operationId: getStudent
+      tags: [students]
+      summary: Chi tiết học viên
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Student detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentWithDetails"
+    put:
+      operationId: updateStudent
+      tags: [students]
+      summary: Cập nhật học viên
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStudentBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentWithDetails"
+    delete:
+      operationId: deleteStudent
+      tags: [students]
+      summary: Xóa học viên
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /instructors:
+    get:
+      operationId: listInstructors
+      tags: [instructors]
+      summary: Danh sách giảng viên
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of instructors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Instructor"
+    post:
+      operationId: createInstructor
+      tags: [instructors]
+      summary: Tạo giảng viên
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInstructorBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Instructor"
+
+  /instructors/{id}:
+    get:
+      operationId: getInstructor
+      tags: [instructors]
+      summary: Chi tiết giảng viên
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Instructor detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Instructor"
+    put:
+      operationId: updateInstructor
+      tags: [instructors]
+      summary: Cập nhật giảng viên
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInstructorBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Instructor"
+    delete:
+      operationId: deleteInstructor
+      tags: [instructors]
+      summary: Xóa giảng viên
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /certificates:
+    get:
+      operationId: listCertificates
+      tags: [certificates]
+      summary: Danh sách lớp để cấp chứng chỉ
+      responses:
+        "200":
+          description: List of classes for certificates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClassWithDetails"
+
+  /certificates/{classId}:
+    get:
+      operationId: getCertificatesByClass
+      tags: [certificates]
+      summary: Danh sách chứng chỉ theo lớp
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Certificates list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CertificateRecord"
+    post:
+      operationId: issueCertificate
+      tags: [certificates]
+      summary: Cấp chứng chỉ cho học viên
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IssueCertificateBody"
+      responses:
+        "201":
+          description: Certificate issued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CertificateRecord"
+
+  /certificates/{classId}/{studentId}:
+    put:
+      operationId: updateCertificate
+      tags: [certificates]
+      summary: Cập nhật thông tin chứng chỉ
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCertificateBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CertificateRecord"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +640,357 @@ components:
       required:
         - status
 
+    DashboardSummary:
+      type: object
+      properties:
+        totalCourses:
+          type: integer
+        totalClasses:
+          type: integer
+        totalStudents:
+          type: integer
+        totalInstructors:
+          type: integer
+        recentClasses:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClassWithDetails"
+      required:
+        - totalCourses
+        - totalClasses
+        - totalStudents
+        - totalInstructors
+        - recentClasses
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        content:
+          type: string
+        duration:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - content
+        - duration
+        - createdAt
+
+    CreateCourseBody:
+      type: object
+      properties:
+        name:
+          type: string
+        content:
+          type: string
+        duration:
+          type: string
+      required:
+        - name
+        - content
+        - duration
+
+    ClassWithDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        courseId:
+          type: integer
+        courseName:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        studentCount:
+          type: integer
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - courseId
+        - courseName
+        - startDate
+        - endDate
+        - studentCount
+        - createdAt
+
+    CreateClassBody:
+      type: object
+      properties:
+        name:
+          type: string
+        courseId:
+          type: integer
+        startDate:
+          type: string
+        endDate:
+          type: string
+      required:
+        - name
+        - courseId
+        - startDate
+        - endDate
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: integer
+        classId:
+          type: integer
+        sessionDate:
+          type: string
+        sessionPeriod:
+          type: string
+        lessonCount:
+          type: integer
+        content:
+          type: string
+        instructorId:
+          type: integer
+        instructorName:
+          type: string
+        mediaUrls:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - classId
+        - sessionDate
+        - sessionPeriod
+        - lessonCount
+        - content
+        - createdAt
+
+    CreateSessionBody:
+      type: object
+      properties:
+        sessionDate:
+          type: string
+        sessionPeriod:
+          type: string
+        lessonCount:
+          type: integer
+        content:
+          type: string
+        instructorId:
+          type: integer
+        mediaUrls:
+          type: array
+          items:
+            type: string
+      required:
+        - sessionDate
+        - sessionPeriod
+        - lessonCount
+        - content
+
+    ClassStudentDetail:
+      type: object
+      properties:
+        studentId:
+          type: integer
+        studentCode:
+          type: string
+        fullName:
+          type: string
+        photoUrl:
+          type: string
+        testResult:
+          type: string
+        classification:
+          type: string
+        supervisorName:
+          type: string
+      required:
+        - studentId
+        - studentCode
+        - fullName
+
+    StudentWithDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+        studentCode:
+          type: string
+        fullName:
+          type: string
+        dateOfBirth:
+          type: string
+        idNumber:
+          type: string
+        idIssueDate:
+          type: string
+        idIssuePlace:
+          type: string
+        workplace:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        photoUrl:
+          type: string
+        instructorId:
+          type: integer
+        instructorName:
+          type: string
+        classId:
+          type: integer
+        className:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - studentCode
+        - fullName
+        - createdAt
+
+    CreateStudentBody:
+      type: object
+      properties:
+        studentCode:
+          type: string
+        fullName:
+          type: string
+        dateOfBirth:
+          type: string
+        idNumber:
+          type: string
+        idIssueDate:
+          type: string
+        idIssuePlace:
+          type: string
+        workplace:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        photoUrl:
+          type: string
+        instructorId:
+          type: integer
+        classId:
+          type: integer
+      required:
+        - studentCode
+        - fullName
+
+    Instructor:
+      type: object
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        academicTitle:
+          type: string
+        position:
+          type: string
+        specialization:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        notes:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - fullName
+        - createdAt
+
+    CreateInstructorBody:
+      type: object
+      properties:
+        fullName:
+          type: string
+        academicTitle:
+          type: string
+        position:
+          type: string
+        specialization:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        notes:
+          type: string
+      required:
+        - fullName
+
+    CertificateRecord:
+      type: object
+      properties:
+        studentId:
+          type: integer
+        classId:
+          type: integer
+        studentCode:
+          type: string
+        fullName:
+          type: string
+        className:
+          type: string
+        decisionNumber:
+          type: string
+        supervisor:
+          type: string
+        printLocation:
+          type: string
+        issuedAt:
+          type: string
+      required:
+        - studentId
+        - classId
+        - studentCode
+        - fullName
+        - className
+
+    IssueCertificateBody:
+      type: object
+      properties:
+        studentId:
+          type: integer
+        decisionNumber:
+          type: string
+        supervisor:
+          type: string
+        printLocation:
+          type: string
+      required:
+        - studentId
+
+    UpdateCertificateBody:
+      type: object
+      properties:
+        decisionNumber:
+          type: string
+        supervisor:
+          type: string
+        printLocation:
+          type: string
