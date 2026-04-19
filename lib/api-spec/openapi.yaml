@@ -24,6 +24,8 @@ tags:
     description: Cấp chứng chỉ
   - name: dashboard
     description: Thống kê tổng quan
+  - name: Storage
+    description: Object storage upload and serving endpoints.
 
 paths:
   /healthz:
@@ -352,6 +354,34 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ClassStudentDetail"
+    put:
+      operationId: bulkUpdateClassStudents
+      tags: [classes]
+      summary: Cập nhật kết quả hàng loạt học viên trong lớp
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulkUpdateStudentsBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                required:
+                  - success
 
   /students:
     get:
@@ -556,6 +586,31 @@ paths:
                 items:
                   $ref: "#/components/schemas/ClassWithDetails"
 
+  /certificates/{classId}/students:
+    get:
+      operationId: getCertificateStudentsByClass
+      tags: [certificates]
+      summary: Danh sách học viên với trạng thái chứng chỉ theo lớp
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Students with certificate status
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CertificateStudentDetail"
+
   /certificates/{classId}:
     get:
       operationId: getCertificatesByClass
@@ -630,6 +685,89 @@ paths:
               schema:
                 $ref: "#/components/schemas/CertificateRecord"
 
+  /storage/uploads/request-url:
+    post:
+      tags: [Storage]
+      operationId: requestUploadUrl
+      summary: Request a presigned URL for file upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadUrlRequest'
+      responses:
+        '200':
+          description: Presigned upload URL generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadUrlResponse'
+        '400':
+          description: Missing or invalid required fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: Failed to generate upload URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /storage/public-objects/{filePath}:
+    get:
+      tags: [Storage]
+      operationId: getPublicObject
+      summary: Serve a public asset
+      parameters:
+        - name: filePath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object content streamed.
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: File not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /storage/objects/{objectPath}:
+    get:
+      tags: [Storage]
+      operationId: getStorageObject
+      summary: Serve an object entity
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object content streamed.
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Object not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
 components:
   schemas:
     HealthStatus:
@@ -639,6 +777,13 @@ components:
           type: string
       required:
         - status
+
+    ErrorEnvelope:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
 
     DashboardSummary:
       type: object
@@ -810,16 +955,39 @@ components:
           type: string
         photoUrl:
           type: string
-        testResult:
+        testScore:
           type: string
-        classification:
+        grade:
           type: string
+        instructorId:
+          type: integer
         supervisorName:
           type: string
       required:
         - studentId
         - studentCode
         - fullName
+
+    BulkUpdateStudentsBody:
+      type: object
+      properties:
+        students:
+          type: array
+          items:
+            type: object
+            properties:
+              studentId:
+                type: integer
+              testScore:
+                type: string
+              grade:
+                type: string
+              instructorId:
+                type: integer
+            required:
+              - studentId
+      required:
+        - students
 
     StudentWithDetails:
       type: object
@@ -943,6 +1111,37 @@ components:
       required:
         - fullName
 
+    CertificateStudentDetail:
+      type: object
+      properties:
+        studentId:
+          type: integer
+        studentCode:
+          type: string
+        fullName:
+          type: string
+        dateOfBirth:
+          type: string
+        courseName:
+          type: string
+        hasCertificate:
+          type: boolean
+        issueDate:
+          type: string
+        expiryDate:
+          type: string
+        instructorId:
+          type: integer
+        printLocation:
+          type: string
+        locationLink:
+          type: string
+      required:
+        - studentId
+        - studentCode
+        - fullName
+        - hasCertificate
+
     CertificateRecord:
       type: object
       properties:
@@ -956,11 +1155,17 @@ components:
           type: string
         className:
           type: string
-        decisionNumber:
+        issueDate:
           type: string
-        supervisor:
+        expiryDate:
+          type: string
+        instructorId:
+          type: integer
+        instructorName:
           type: string
         printLocation:
+          type: string
+        locationLink:
           type: string
         issuedAt:
           type: string
@@ -976,11 +1181,15 @@ components:
       properties:
         studentId:
           type: integer
-        decisionNumber:
+        issueDate:
           type: string
-        supervisor:
+        expiryDate:
           type: string
+        instructorId:
+          type: integer
         printLocation:
+          type: string
+        locationLink:
           type: string
       required:
         - studentId
@@ -988,9 +1197,36 @@ components:
     UpdateCertificateBody:
       type: object
       properties:
-        decisionNumber:
+        issueDate:
           type: string
-        supervisor:
+        expiryDate:
           type: string
+        instructorId:
+          type: integer
         printLocation:
           type: string
+        locationLink:
+          type: string
+
+    UploadUrlRequest:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name:
+          type: string
+        size:
+          type: integer
+        contentType:
+          type: string
+
+    UploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL:
+          type: string
+          format: uri
+        objectPath:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/UploadUrlRequest'

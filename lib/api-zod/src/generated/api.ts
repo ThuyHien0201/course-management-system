@@ -273,13 +273,36 @@ export const ListClassStudentsResponseItem = zod.object({
   studentCode: zod.string(),
   fullName: zod.string(),
   photoUrl: zod.string().optional(),
-  testResult: zod.string().optional(),
-  classification: zod.string().optional(),
+  testScore: zod.string().optional(),
+  grade: zod.string().optional(),
+  instructorId: zod.number().optional(),
   supervisorName: zod.string().optional(),
 });
 export const ListClassStudentsResponse = zod.array(
   ListClassStudentsResponseItem,
 );
+
+/**
+ * @summary Cập nhật kết quả hàng loạt học viên trong lớp
+ */
+export const BulkUpdateClassStudentsParams = zod.object({
+  classId: zod.coerce.number(),
+});
+
+export const BulkUpdateClassStudentsBody = zod.object({
+  students: zod.array(
+    zod.object({
+      studentId: zod.number(),
+      testScore: zod.string().optional(),
+      grade: zod.string().optional(),
+      instructorId: zod.number().optional(),
+    }),
+  ),
+});
+
+export const BulkUpdateClassStudentsResponse = zod.object({
+  success: zod.boolean(),
+});
 
 /**
  * @summary Danh sách học viên
@@ -510,6 +533,34 @@ export const ListCertificatesResponseItem = zod.object({
 export const ListCertificatesResponse = zod.array(ListCertificatesResponseItem);
 
 /**
+ * @summary Danh sách học viên với trạng thái chứng chỉ theo lớp
+ */
+export const GetCertificateStudentsByClassParams = zod.object({
+  classId: zod.coerce.number(),
+});
+
+export const GetCertificateStudentsByClassQueryParams = zod.object({
+  search: zod.coerce.string().optional(),
+});
+
+export const GetCertificateStudentsByClassResponseItem = zod.object({
+  studentId: zod.number(),
+  studentCode: zod.string(),
+  fullName: zod.string(),
+  dateOfBirth: zod.string().optional(),
+  courseName: zod.string().optional(),
+  hasCertificate: zod.boolean(),
+  issueDate: zod.string().optional(),
+  expiryDate: zod.string().optional(),
+  instructorId: zod.number().optional(),
+  printLocation: zod.string().optional(),
+  locationLink: zod.string().optional(),
+});
+export const GetCertificateStudentsByClassResponse = zod.array(
+  GetCertificateStudentsByClassResponseItem,
+);
+
+/**
  * @summary Danh sách chứng chỉ theo lớp
  */
 export const GetCertificatesByClassParams = zod.object({
@@ -522,9 +573,12 @@ export const GetCertificatesByClassResponseItem = zod.object({
   studentCode: zod.string(),
   fullName: zod.string(),
   className: zod.string(),
-  decisionNumber: zod.string().optional(),
-  supervisor: zod.string().optional(),
+  issueDate: zod.string().optional(),
+  expiryDate: zod.string().optional(),
+  instructorId: zod.number().optional(),
+  instructorName: zod.string().optional(),
   printLocation: zod.string().optional(),
+  locationLink: zod.string().optional(),
   issuedAt: zod.string().optional(),
 });
 export const GetCertificatesByClassResponse = zod.array(
@@ -540,9 +594,11 @@ export const IssueCertificateParams = zod.object({
 
 export const IssueCertificateBody = zod.object({
   studentId: zod.number(),
-  decisionNumber: zod.string().optional(),
-  supervisor: zod.string().optional(),
+  issueDate: zod.string().optional(),
+  expiryDate: zod.string().optional(),
+  instructorId: zod.number().optional(),
   printLocation: zod.string().optional(),
+  locationLink: zod.string().optional(),
 });
 
 /**
@@ -554,9 +610,11 @@ export const UpdateCertificateParams = zod.object({
 });
 
 export const UpdateCertificateBody = zod.object({
-  decisionNumber: zod.string().optional(),
-  supervisor: zod.string().optional(),
+  issueDate: zod.string().optional(),
+  expiryDate: zod.string().optional(),
+  instructorId: zod.number().optional(),
   printLocation: zod.string().optional(),
+  locationLink: zod.string().optional(),
 });
 
 export const UpdateCertificateResponse = zod.object({
@@ -565,8 +623,46 @@ export const UpdateCertificateResponse = zod.object({
   studentCode: zod.string(),
   fullName: zod.string(),
   className: zod.string(),
-  decisionNumber: zod.string().optional(),
-  supervisor: zod.string().optional(),
+  issueDate: zod.string().optional(),
+  expiryDate: zod.string().optional(),
+  instructorId: zod.number().optional(),
+  instructorName: zod.string().optional(),
   printLocation: zod.string().optional(),
+  locationLink: zod.string().optional(),
   issuedAt: zod.string().optional(),
+});
+
+/**
+ * @summary Request a presigned URL for file upload
+ */
+export const RequestUploadUrlBody = zod.object({
+  name: zod.string(),
+  size: zod.number(),
+  contentType: zod.string(),
+});
+
+export const RequestUploadUrlResponse = zod.object({
+  uploadURL: zod.string().url(),
+  objectPath: zod.string(),
+  metadata: zod
+    .object({
+      name: zod.string(),
+      size: zod.number(),
+      contentType: zod.string(),
+    })
+    .optional(),
+});
+
+/**
+ * @summary Serve a public asset
+ */
+export const GetPublicObjectParams = zod.object({
+  filePath: zod.coerce.string(),
+});
+
+/**
+ * @summary Serve an object entity
+ */
+export const GetStorageObjectParams = zod.object({
+  objectPath: zod.coerce.string(),
 });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout";
 import {
   useListClasses,
@@ -11,30 +11,58 @@ import {
   useUpdateSession,
   useDeleteSession,
   useListClassStudents,
+  useBulkUpdateClassStudents,
   useListInstructors,
   getListClassesQueryKey,
   getListClassSessionsQueryKey,
   getListClassStudentsQueryKey,
 } from "@workspace/api-client-react";
+import { ObjectUploader } from "@workspace/object-storage-web";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Search, Pencil, Trash2, Library, Calendar, User, CalendarDays } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, Library, Calendar, User, CalendarDays, Image } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type ClassForm = { name: string; courseId: string; startDate: string; endDate: string };
 const emptyClassForm: ClassForm = { name: "", courseId: "", startDate: "", endDate: "" };
 
-type SessionForm = { sessionDate: string; sessionPeriod: string; lessonCount: string; content: string; instructorId: string };
-const emptySessionForm: SessionForm = { sessionDate: "", sessionPeriod: "Sáng", lessonCount: "", content: "", instructorId: "" };
+type SessionForm = {
+  sessionDate: string;
+  sessionPeriod: string;
+  lessonCount: string;
+  content: string;
+  instructorId: string;
+  mediaUrls: string[];
+};
+const emptySessionForm: SessionForm = {
+  sessionDate: "",
+  sessionPeriod: "Sáng",
+  lessonCount: "",
+  content: "",
+  instructorId: "",
+  mediaUrls: [],
+};
+
+type StudentRow = {
+  studentId: number;
+  studentCode: string;
+  fullName: string;
+  testScore: string;
+  grade: string;
+  instructorId: string;
+  supervisorName: string | null;
+};
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export default function ClassesPage() {
   const { toast } = useToast();
@@ -51,6 +79,9 @@ export default function ClassesPage() {
   const [sessionForm, setSessionForm] = useState<SessionForm>(emptySessionForm);
   const [sessionDeleteId, setSessionDeleteId] = useState<number | null>(null);
 
+  const [studentRows, setStudentRows] = useState<StudentRow[]>([]);
+  const [studentsDirty, setStudentsDirty] = useState(false);
+
   const { data: classes = [], isLoading } = useListClasses(search ? { search } : undefined);
   const { data: courses = [] } = useListCourses();
   const { data: instructors = [] } = useListInstructors();
@@ -60,21 +91,42 @@ export default function ClassesPage() {
   const createSessionMutation = useCreateSession();
   const updateSessionMutation = useUpdateSession();
   const deleteSessionMutation = useDeleteSession();
+  const bulkUpdateMutation = useBulkUpdateClassStudents();
 
   const { data: sessions = [] } = useListClassSessions(selectedClass!, {
-    query: { enabled: !!selectedClass, queryKey: getListClassSessionsQueryKey(selectedClass!) }
+    query: { enabled: !!selectedClass, queryKey: getListClassSessionsQueryKey(selectedClass!) },
   });
   const { data: classStudents = [] } = useListClassStudents(selectedClass!, {
-    query: { enabled: !!selectedClass, queryKey: getListClassStudentsQueryKey(selectedClass!) }
+    query: { enabled: !!selectedClass, queryKey: getListClassStudentsQueryKey(selectedClass!) },
   });
 
-  const selectedClassData = classes.find(c => c.id === selectedClass);
+  useEffect(() => {
+    if (classStudents.length > 0) {
+      setStudentRows(
+        classStudents.map((s) => ({
+          studentId: s.studentId,
+          studentCode: s.studentCode,
+          fullName: s.fullName,
+          testScore: s.testScore ?? "",
+          grade: s.grade ?? "",
+          instructorId: s.instructorId ? String(s.instructorId) : "",
+          supervisorName: s.supervisorName ?? null,
+        }))
+      );
+      setStudentsDirty(false);
+    }
+  }, [classStudents]);
+
+  const selectedClassData = classes.find((c) => c.id === selectedClass);
 
   const invalidateClasses = () => qc.invalidateQueries({ queryKey: getListClassesQueryKey() });
-  const invalidateSessions = () => selectedClass && qc.invalidateQueries({ queryKey: getListClassSessionsQueryKey(selectedClass) });
+  const invalidateSessions = () =>
+    selectedClass && qc.invalidateQueries({ queryKey: getListClassSessionsQueryKey(selectedClass) });
+  const invalidateStudents = () =>
+    selectedClass && qc.invalidateQueries({ queryKey: getListClassStudentsQueryKey(selectedClass) });
 
   const openCreate = () => { setEditId(null); setForm(emptyClassForm); setOpen(true); };
-  const openEdit = (c: typeof classes[0]) => {
+  const openEdit = (c: (typeof classes)[0]) => {
     setEditId(c.id);
     setForm({ name: c.name, courseId: String(c.courseId), startDate: c.startDate, endDate: c.endDate });
     setOpen(true);
@@ -85,7 +137,12 @@ export default function ClassesPage() {
       toast({ title: "Vui lòng điền đầy đủ thông tin", variant: "destructive" });
       return;
     }
-    const data = { name: form.name, courseId: Number(form.courseId), startDate: form.startDate, endDate: form.endDate };
+    const data = {
+      name: form.name,
+      courseId: Number(form.courseId),
+      startDate: form.startDate,
+      endDate: form.endDate,
+    };
     try {
       if (editId) {
         await updateMutation.mutateAsync({ id: editId, data });
@@ -114,13 +171,20 @@ export default function ClassesPage() {
     }
   };
 
-  const openSessionCreate = () => { setSessionEditId(null); setSessionForm(emptySessionForm); setSessionOpen(true); };
-  const openSessionEdit = (s: typeof sessions[0]) => {
+  const openSessionCreate = () => {
+    setSessionEditId(null);
+    setSessionForm(emptySessionForm);
+    setSessionOpen(true);
+  };
+  const openSessionEdit = (s: (typeof sessions)[0]) => {
     setSessionEditId(s.id);
     setSessionForm({
-      sessionDate: s.sessionDate, sessionPeriod: s.sessionPeriod,
-      lessonCount: String(s.lessonCount), content: s.content,
+      sessionDate: s.sessionDate,
+      sessionPeriod: s.sessionPeriod,
+      lessonCount: String(s.lessonCount),
+      content: s.content,
       instructorId: s.instructorId ? String(s.instructorId) : "",
+      mediaUrls: (s.mediaUrls as string[]) ?? [],
     });
     setSessionOpen(true);
   };
@@ -131,9 +195,12 @@ export default function ClassesPage() {
       return;
     }
     const data = {
-      sessionDate: sessionForm.sessionDate, sessionPeriod: sessionForm.sessionPeriod,
-      lessonCount: Number(sessionForm.lessonCount), content: sessionForm.content,
+      sessionDate: sessionForm.sessionDate,
+      sessionPeriod: sessionForm.sessionPeriod,
+      lessonCount: Number(sessionForm.lessonCount),
+      content: sessionForm.content,
       instructorId: sessionForm.instructorId ? Number(sessionForm.instructorId) : null,
+      mediaUrls: sessionForm.mediaUrls,
     };
     try {
       if (sessionEditId) {
@@ -162,6 +229,48 @@ export default function ClassesPage() {
     }
   };
 
+  const handleSaveStudents = async () => {
+    if (!selectedClass) return;
+    try {
+      await bulkUpdateMutation.mutateAsync({
+        classId: selectedClass,
+        data: {
+          students: studentRows.map((r) => ({
+            studentId: r.studentId,
+            testScore: r.testScore || null,
+            grade: r.grade || null,
+            instructorId: r.instructorId ? Number(r.instructorId) : null,
+          })),
+        },
+      });
+      toast({ title: "Lưu kết quả học viên thành công" });
+      setStudentsDirty(false);
+      invalidateStudents();
+    } catch {
+      toast({ title: "Có lỗi xảy ra", variant: "destructive" });
+    }
+  };
+
+  const handleCancelStudents = () => {
+    setStudentRows(
+      classStudents.map((s) => ({
+        studentId: s.studentId,
+        studentCode: s.studentCode,
+        fullName: s.fullName,
+        testScore: s.testScore ?? "",
+        grade: s.grade ?? "",
+        instructorId: s.instructorId ? String(s.instructorId) : "",
+        supervisorName: s.supervisorName ?? null,
+      }))
+    );
+    setStudentsDirty(false);
+  };
+
+  const updateStudentRow = (idx: number, field: keyof StudentRow, value: string) => {
+    setStudentRows((rows) => rows.map((r, i) => (i === idx ? { ...r, [field]: value } : r)));
+    setStudentsDirty(true);
+  };
+
   return (
     <AppLayout>
       <div className="p-8 max-w-7xl mx-auto space-y-6">
@@ -177,7 +286,12 @@ export default function ClassesPage() {
 
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Tìm kiếm lớp học..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <Input
+            placeholder="Tìm kiếm lớp học..."
+            className="pl-9"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -203,17 +317,29 @@ export default function ClassesPage() {
                         <p className="text-xs text-muted-foreground mt-0.5">{cls.courseName}</p>
                         <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                           <Calendar className="h-3 w-3" />
-                          <span>{cls.startDate} - {cls.endDate}</span>
+                          <span>
+                            {cls.startDate} - {cls.endDate}
+                          </span>
                         </div>
                         <Badge variant="secondary" className="mt-1.5 text-xs">
                           {cls.studentCount} học viên
                         </Badge>
                       </div>
                       <div className="flex gap-1 shrink-0">
-                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); openEdit(cls); }}>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          onClick={(e) => { e.stopPropagation(); openEdit(cls); }}
+                        >
                           <Pencil className="h-3 w-3" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={(e) => { e.stopPropagation(); setDeleteId(cls.id); }}>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7 text-destructive hover:text-destructive"
+                          onClick={(e) => { e.stopPropagation(); setDeleteId(cls.id); }}
+                        >
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>
@@ -229,7 +355,10 @@ export default function ClassesPage() {
               <Card className="border shadow-sm">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">{selectedClassData.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground">{selectedClassData.courseName} &bull; {selectedClassData.startDate} - {selectedClassData.endDate}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedClassData.courseName} &bull; {selectedClassData.startDate} -{" "}
+                    {selectedClassData.endDate}
+                  </p>
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="sessions">
@@ -237,6 +366,7 @@ export default function ClassesPage() {
                       <TabsTrigger value="sessions">Buổi học ({sessions.length})</TabsTrigger>
                       <TabsTrigger value="students">Danh sách học viên ({classStudents.length})</TabsTrigger>
                     </TabsList>
+
                     <TabsContent value="sessions" className="space-y-3">
                       <div className="flex justify-end">
                         <Button size="sm" className="gap-1" onClick={openSessionCreate}>
@@ -264,12 +394,37 @@ export default function ClassesPage() {
                                     <User className="h-3 w-3" /> {s.instructorName}
                                   </p>
                                 )}
+                                {(s.mediaUrls as string[])?.length > 0 && (
+                                  <div className="flex gap-1.5 mt-1.5 flex-wrap">
+                                    {(s.mediaUrls as string[]).map((url, i) => (
+                                      <a
+                                        key={i}
+                                        href={url.startsWith("/objects/") ? `${BASE}/api/storage${url}` : url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="flex items-center gap-1 text-xs text-primary hover:underline"
+                                      >
+                                        <Image className="h-3 w-3" /> Tệp {i + 1}
+                                      </a>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                               <div className="flex gap-1 shrink-0">
-                                <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openSessionEdit(s)}>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  className="h-7 w-7"
+                                  onClick={() => openSessionEdit(s)}
+                                >
                                   <Pencil className="h-3 w-3" />
                                 </Button>
-                                <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => setSessionDeleteId(s.id)}>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  className="h-7 w-7 text-destructive hover:text-destructive"
+                                  onClick={() => setSessionDeleteId(s.id)}
+                                >
                                   <Trash2 className="h-3 w-3" />
                                 </Button>
                               </div>
@@ -278,33 +433,94 @@ export default function ClassesPage() {
                         </div>
                       )}
                     </TabsContent>
+
                     <TabsContent value="students">
                       {classStudents.length === 0 ? (
-                        <div className="text-center py-8 text-muted-foreground text-sm">Chưa có học viên nào trong lớp</div>
+                        <div className="text-center py-8 text-muted-foreground text-sm">
+                          Chưa có học viên nào trong lớp
+                        </div>
                       ) : (
-                        <div className="overflow-x-auto rounded border">
-                          <table className="w-full text-sm">
-                            <thead>
-                              <tr className="border-b bg-muted/50">
-                                <th className="text-left px-3 py-2 font-medium text-muted-foreground text-xs">Mã HV</th>
-                                <th className="text-left px-3 py-2 font-medium text-muted-foreground text-xs">Họ và tên</th>
-                                <th className="text-left px-3 py-2 font-medium text-muted-foreground text-xs">Kết quả</th>
-                                <th className="text-left px-3 py-2 font-medium text-muted-foreground text-xs">Người phụ trách</th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y">
-                              {classStudents.map((s) => (
-                                <tr key={s.studentId} className="hover:bg-muted/20">
-                                  <td className="px-3 py-2">
-                                    <Badge variant="outline" className="text-xs">{s.studentCode}</Badge>
-                                  </td>
-                                  <td className="px-3 py-2 font-medium text-sm">{s.fullName}</td>
-                                  <td className="px-3 py-2 text-muted-foreground text-xs">{s.testResult || "—"}</td>
-                                  <td className="px-3 py-2 text-muted-foreground text-xs">{s.supervisorName || "—"}</td>
+                        <div className="space-y-3">
+                          <div className="overflow-x-auto rounded border">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b bg-muted/50">
+                                  <th className="text-left px-3 py-2 font-medium text-muted-foreground text-xs">Mã HV</th>
+                                  <th className="text-left px-3 py-2 font-medium text-muted-foreground text-xs">Họ tên</th>
+                                  <th className="text-left px-3 py-2 font-medium text-muted-foreground text-xs">Điểm số</th>
+                                  <th className="text-left px-3 py-2 font-medium text-muted-foreground text-xs">Xếp loại</th>
+                                  <th className="text-left px-3 py-2 font-medium text-muted-foreground text-xs">Người phụ trách</th>
                                 </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                              </thead>
+                              <tbody className="divide-y">
+                                {studentRows.map((s, idx) => (
+                                  <tr key={s.studentId} className="hover:bg-muted/20">
+                                    <td className="px-3 py-2">
+                                      <Badge variant="outline" className="text-xs">{s.studentCode}</Badge>
+                                    </td>
+                                    <td className="px-3 py-2 font-medium text-sm">{s.fullName}</td>
+                                    <td className="px-3 py-2">
+                                      <Input
+                                        className="h-7 w-20 text-xs"
+                                        placeholder="Điểm..."
+                                        value={s.testScore}
+                                        onChange={(e) => updateStudentRow(idx, "testScore", e.target.value)}
+                                      />
+                                    </td>
+                                    <td className="px-3 py-2">
+                                      <Select
+                                        value={s.grade}
+                                        onValueChange={(v) => updateStudentRow(idx, "grade", v)}
+                                      >
+                                        <SelectTrigger className="h-7 w-28 text-xs">
+                                          <SelectValue placeholder="Chọn..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="Đạt">Đạt</SelectItem>
+                                          <SelectItem value="Không đạt">Không đạt</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                    </td>
+                                    <td className="px-3 py-2">
+                                      <Select
+                                        value={s.instructorId}
+                                        onValueChange={(v) => updateStudentRow(idx, "instructorId", v)}
+                                      >
+                                        <SelectTrigger className="h-7 text-xs min-w-32">
+                                          <SelectValue placeholder="Chọn GV..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="">— Không có —</SelectItem>
+                                          {instructors.map((i) => (
+                                            <SelectItem key={i.id} value={String(i.id)}>
+                                              {i.fullName}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          <div className="flex gap-2 justify-end">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={handleCancelStudents}
+                              disabled={!studentsDirty}
+                            >
+                              Hủy
+                            </Button>
+                            <Button
+                              size="sm"
+                              onClick={handleSaveStudents}
+                              disabled={!studentsDirty || bulkUpdateMutation.isPending}
+                            >
+                              Lưu kết quả
+                            </Button>
+                          </div>
                         </div>
                       )}
                     </TabsContent>
@@ -322,15 +538,21 @@ export default function ClassesPage() {
           )}
         </div>
 
+        {/* Class form dialog */}
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>{editId ? "Cập nhật lớp học" : "Thêm lớp học mới"}</DialogTitle>
+              <DialogDescription>Điền thông tin lớp học</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-2">
               <div className="space-y-1.5">
                 <Label>Tên lớp học <span className="text-destructive">*</span></Label>
-                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="VD: Lớp ATLĐ-2024-01" />
+                <Input
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  placeholder="VD: Lớp ATLĐ-2024-01"
+                />
               </div>
               <div className="space-y-1.5">
                 <Label>Khóa học <span className="text-destructive">*</span></Label>
@@ -346,37 +568,57 @@ export default function ClassesPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label>Từ ngày <span className="text-destructive">*</span></Label>
-                  <Input type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
+                  <Input
+                    type="date"
+                    value={form.startDate}
+                    onChange={(e) => setForm({ ...form, startDate: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Đến ngày <span className="text-destructive">*</span></Label>
-                  <Input type="date" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} />
+                  <Input
+                    type="date"
+                    value={form.endDate}
+                    onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+                  />
                 </div>
               </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setOpen(false)}>Hủy</Button>
-              <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending}>
+              <Button
+                onClick={handleSubmit}
+                disabled={createMutation.isPending || updateMutation.isPending}
+              >
                 {editId ? "Cập nhật" : "Tạo lớp học"}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
+        {/* Session form dialog */}
         <Dialog open={sessionOpen} onOpenChange={setSessionOpen}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{sessionEditId ? "Cập nhật buổi học" : "Thêm buổi học"}</DialogTitle>
+              <DialogDescription>Điền thông tin buổi học</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-2">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label>Ngày học <span className="text-destructive">*</span></Label>
-                  <Input type="date" value={sessionForm.sessionDate} onChange={(e) => setSessionForm({ ...sessionForm, sessionDate: e.target.value })} />
+                  <Input
+                    type="date"
+                    value={sessionForm.sessionDate}
+                    onChange={(e) => setSessionForm({ ...sessionForm, sessionDate: e.target.value })}
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Buổi <span className="text-destructive">*</span></Label>
-                  <Select value={sessionForm.sessionPeriod} onValueChange={(v) => setSessionForm({ ...sessionForm, sessionPeriod: v })}>
+                  <Select
+                    value={sessionForm.sessionPeriod}
+                    onValueChange={(v) => setSessionForm({ ...sessionForm, sessionPeriod: v })}
+                  >
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Sáng">Sáng</SelectItem>
@@ -388,15 +630,29 @@ export default function ClassesPage() {
               </div>
               <div className="space-y-1.5">
                 <Label>Số lượng tiết <span className="text-destructive">*</span></Label>
-                <Input type="number" min="1" value={sessionForm.lessonCount} onChange={(e) => setSessionForm({ ...sessionForm, lessonCount: e.target.value })} placeholder="VD: 4" />
+                <Input
+                  type="number"
+                  min="1"
+                  value={sessionForm.lessonCount}
+                  onChange={(e) => setSessionForm({ ...sessionForm, lessonCount: e.target.value })}
+                  placeholder="VD: 4"
+                />
               </div>
               <div className="space-y-1.5">
                 <Label>Nội dung buổi học <span className="text-destructive">*</span></Label>
-                <Textarea rows={3} value={sessionForm.content} onChange={(e) => setSessionForm({ ...sessionForm, content: e.target.value })} placeholder="Mô tả nội dung buổi học..." />
+                <Textarea
+                  rows={3}
+                  value={sessionForm.content}
+                  onChange={(e) => setSessionForm({ ...sessionForm, content: e.target.value })}
+                  placeholder="Mô tả nội dung buổi học..."
+                />
               </div>
               <div className="space-y-1.5">
                 <Label>Giảng viên</Label>
-                <Select value={sessionForm.instructorId} onValueChange={(v) => setSessionForm({ ...sessionForm, instructorId: v })}>
+                <Select
+                  value={sessionForm.instructorId}
+                  onValueChange={(v) => setSessionForm({ ...sessionForm, instructorId: v })}
+                >
                   <SelectTrigger><SelectValue placeholder="Chọn giảng viên" /></SelectTrigger>
                   <SelectContent>
                     {instructors.map((i) => (
@@ -405,16 +661,67 @@ export default function ClassesPage() {
                   </SelectContent>
                 </Select>
               </div>
+              <div className="space-y-1.5">
+                <Label>Tài liệu / Hình ảnh / Video</Label>
+                {sessionForm.mediaUrls.length > 0 && (
+                  <div className="mb-2 space-y-1">
+                    {sessionForm.mediaUrls.map((url, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs bg-muted/40 rounded p-1.5">
+                        <span className="truncate flex-1">{url}</span>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-5 w-5 text-destructive shrink-0"
+                          onClick={() =>
+                            setSessionForm((prev) => ({
+                              ...prev,
+                              mediaUrls: prev.mediaUrls.filter((_, j) => j !== i),
+                            }))
+                          }
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <ObjectUploader
+                  onGetUploadParameters={async (file) => {
+                    const res = await fetch(`${BASE}/api/storage/uploads/request-url`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ name: file.name, size: file.size, contentType: file.type }),
+                    });
+                    const { uploadURL } = await res.json() as { uploadURL: string };
+                    return { method: "PUT" as const, url: uploadURL, headers: { "Content-Type": file.type } };
+                  }}
+                  onComplete={(result) => {
+                    const paths = result.successful?.map((f) => {
+                      const resp = f.response?.body as { objectPath?: string } | undefined;
+                      return resp?.objectPath ?? null;
+                    }).filter(Boolean) as string[];
+                    if (paths.length > 0) {
+                      setSessionForm((prev) => ({ ...prev, mediaUrls: [...prev.mediaUrls, ...paths] }));
+                    }
+                  }}
+                >
+                  Tải lên tệp
+                </ObjectUploader>
+              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setSessionOpen(false)}>Hủy</Button>
-              <Button onClick={handleSessionSubmit} disabled={createSessionMutation.isPending || updateSessionMutation.isPending}>
+              <Button
+                onClick={handleSessionSubmit}
+                disabled={createSessionMutation.isPending || updateSessionMutation.isPending}
+              >
                 {sessionEditId ? "Cập nhật" : "Thêm buổi học"}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
+        {/* Delete class dialog */}
         <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -423,11 +730,17 @@ export default function ClassesPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Xóa</AlertDialogAction>
+              <AlertDialogAction
+                onClick={handleDelete}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Xóa
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
+        {/* Delete session dialog */}
         <AlertDialog open={!!sessionDeleteId} onOpenChange={(o) => !o && setSessionDeleteId(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -436,7 +749,12 @@ export default function ClassesPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction onClick={handleSessionDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Xóa</AlertDialogAction>
+              <AlertDialogAction
+                onClick={handleSessionDelete}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Xóa
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { classesTable, coursesTable, studentsTable } from "@workspace/db";
+import { classesTable, coursesTable, studentsTable, instructorsTable } from "@workspace/db";
 import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
@@ -11,6 +11,15 @@ const classBodySchema = z.object({
   courseId: z.number().int(),
   startDate: z.string().min(1),
   endDate: z.string().min(1),
+});
+
+const bulkUpdateStudentsSchema = z.object({
+  students: z.array(z.object({
+    studentId: z.number().int(),
+    testScore: z.string().optional().nullable(),
+    grade: z.string().optional().nullable(),
+    instructorId: z.number().int().optional().nullable(),
+  })),
 });
 
 async function buildClassWithDetails(c: typeof classesTable.$inferSelect) {
@@ -68,27 +77,39 @@ router.delete("/:id", async (req, res) => {
 
 router.get("/:classId/students", async (req, res) => {
   const classId = Number(req.params.classId);
-  const { instructorsTable, certificatesTable } = await import("@workspace/db");
   const students = await db.select().from(studentsTable).where(eq(studentsTable.classId, classId));
   const result = await Promise.all(students.map(async (s) => {
     const [instructor] = s.instructorId
       ? await db.select().from(instructorsTable).where(eq(instructorsTable.id, s.instructorId))
       : [];
-    const [cert] = await db
-      .select()
-      .from(certificatesTable)
-      .where(eq(certificatesTable.studentId, s.id));
     return {
       studentId: s.id,
       studentCode: s.studentCode,
       fullName: s.fullName,
-      photoUrl: s.photoUrl,
-      testResult: cert?.decisionNumber ?? null,
-      classification: null,
+      photoUrl: s.photoUrl ?? null,
+      testScore: s.testScore ?? null,
+      grade: s.grade ?? null,
+      instructorId: s.instructorId ?? null,
       supervisorName: instructor?.fullName ?? null,
     };
   }));
   res.json(result);
+});
+
+router.put("/:classId/students", async (req, res) => {
+  const classId = Number(req.params.classId);
+  const body = bulkUpdateStudentsSchema.parse(req.body);
+  await Promise.all(body.students.map(async (item) => {
+    await db
+      .update(studentsTable)
+      .set({
+        testScore: item.testScore,
+        grade: item.grade,
+        instructorId: item.instructorId,
+      })
+      .where(eq(studentsTable.id, item.studentId));
+  }));
+  res.json({ success: true });
 });
 
 export default router;

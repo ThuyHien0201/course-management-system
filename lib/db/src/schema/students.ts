@@ -19,6 +19,8 @@ export const studentsTable = pgTable("students", {
   photoUrl: text("photo_url"),
   instructorId: integer("instructor_id").references(() => instructorsTable.id),
   classId: integer("class_id").references(() => classesTable.id),
+  testScore: text("test_score"),
+  grade: text("grade"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

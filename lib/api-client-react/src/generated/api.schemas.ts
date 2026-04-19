@@ -9,6 +9,10 @@ export interface HealthStatus {
   status: string;
 }
 
+export interface ErrorEnvelope {
+  error: string;
+}
+
 export interface ClassWithDetails {
   id: number;
   name: string;
@@ -76,9 +80,21 @@ export interface ClassStudentDetail {
   studentCode: string;
   fullName: string;
   photoUrl?: string;
-  testResult?: string;
-  classification?: string;
+  testScore?: string;
+  grade?: string;
+  instructorId?: number;
   supervisorName?: string;
+}
+
+export type BulkUpdateStudentsBodyStudentsItem = {
+  studentId: number;
+  testScore?: string;
+  grade?: string;
+  instructorId?: number;
+};
+
+export interface BulkUpdateStudentsBody {
+  students: BulkUpdateStudentsBodyStudentsItem[];
 }
 
 export interface StudentWithDetails {
@@ -139,29 +155,62 @@ export interface CreateInstructorBody {
   notes?: string;
 }
 
+export interface CertificateStudentDetail {
+  studentId: number;
+  studentCode: string;
+  fullName: string;
+  dateOfBirth?: string;
+  courseName?: string;
+  hasCertificate: boolean;
+  issueDate?: string;
+  expiryDate?: string;
+  instructorId?: number;
+  printLocation?: string;
+  locationLink?: string;
+}
+
 export interface CertificateRecord {
   studentId: number;
   classId: number;
   studentCode: string;
   fullName: string;
   className: string;
-  decisionNumber?: string;
-  supervisor?: string;
+  issueDate?: string;
+  expiryDate?: string;
+  instructorId?: number;
+  instructorName?: string;
   printLocation?: string;
+  locationLink?: string;
   issuedAt?: string;
 }
 
 export interface IssueCertificateBody {
   studentId: number;
-  decisionNumber?: string;
-  supervisor?: string;
+  issueDate?: string;
+  expiryDate?: string;
+  instructorId?: number;
   printLocation?: string;
+  locationLink?: string;
 }
 
 export interface UpdateCertificateBody {
-  decisionNumber?: string;
-  supervisor?: string;
+  issueDate?: string;
+  expiryDate?: string;
+  instructorId?: number;
   printLocation?: string;
+  locationLink?: string;
+}
+
+export interface UploadUrlRequest {
+  name: string;
+  size: number;
+  contentType: string;
+}
+
+export interface UploadUrlResponse {
+  uploadURL: string;
+  objectPath: string;
+  metadata?: UploadUrlRequest;
 }
 
 export type ListCoursesParams = {
@@ -173,11 +222,19 @@ export type ListClassesParams = {
   courseId?: number;
 };
 
+export type BulkUpdateClassStudents200 = {
+  success: boolean;
+};
+
 export type ListStudentsParams = {
   search?: string;
   classId?: number;
 };
 
 export type ListInstructorsParams = {
+  search?: string;
+};
+
+export type GetCertificateStudentsByClassParams = {
   search?: string;
 };
