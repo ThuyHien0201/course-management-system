@@ -37,7 +37,7 @@ export default function CertificatesPage() {
   const [certForm, setCertForm] = useState<CertForm>(emptyCertForm);
 
   const { data: classes = [], isLoading } = useListCertificates();
-  const { data: instructors = [] } = useListInstructors();
+  const { data: instructors = [] } = useListInstructors({ onlyApproved: "true" });
   const { data: students = [], isLoading: studentsLoading } = useGetCertificateStudentsByClass(
     selectedClass!,
     search ? { search } : undefined,

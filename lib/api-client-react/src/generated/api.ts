@@ -17,6 +17,7 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  ApproveQc200,
   BulkUpdateClassStudents200,
   BulkUpdateStudentsBody,
   CertificateRecord,
@@ -32,13 +33,20 @@ import type {
   DashboardSummary,
   ErrorEnvelope,
   GetCertificateStudentsByClassParams,
+  GetQcHistoryParams,
   HealthStatus,
   Instructor,
   IssueCertificateBody,
   ListClassesParams,
   ListCoursesParams,
   ListInstructorsParams,
+  ListQcItemsParams,
   ListStudentsParams,
+  QcActionBody,
+  QcHistoryItem,
+  QcItem,
+  QcSummary,
+  RejectQc200,
   Session,
   StudentWithDetails,
   UpdateCertificateBody,
@@ -2960,6 +2968,441 @@ export const useUpdateCertificate = <
 > => {
   return useMutation(getUpdateCertificateMutationOptions(options));
 };
+
+/**
+ * @summary Danh sách mục cần duyệt theo loại và trạng thái
+ */
+export const getListQcItemsUrl = (params: ListQcItemsParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/qc/items?${stringifiedParams}`
+    : `/api/qc/items`;
+};
+
+export const listQcItems = async (
+  params: ListQcItemsParams,
+  options?: RequestInit,
+): Promise<QcItem[]> => {
+  return customFetch<QcItem[]>(getListQcItemsUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListQcItemsQueryKey = (params?: ListQcItemsParams) => {
+  return [`/api/qc/items`, ...(params ? [params] : [])] as const;
+};
+
+export const getListQcItemsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listQcItems>>,
+  TError = ErrorType<unknown>,
+>(
+  params: ListQcItemsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listQcItems>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListQcItemsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listQcItems>>> = ({
+    signal,
+  }) => listQcItems(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listQcItems>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListQcItemsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listQcItems>>
+>;
+export type ListQcItemsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Danh sách mục cần duyệt theo loại và trạng thái
+ */
+
+export function useListQcItems<
+  TData = Awaited<ReturnType<typeof listQcItems>>,
+  TError = ErrorType<unknown>,
+>(
+  params: ListQcItemsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listQcItems>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListQcItemsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Tổng hợp số lượng theo loại và trạng thái
+ */
+export const getGetQcSummaryUrl = () => {
+  return `/api/qc/summary`;
+};
+
+export const getQcSummary = async (
+  options?: RequestInit,
+): Promise<QcSummary> => {
+  return customFetch<QcSummary>(getGetQcSummaryUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetQcSummaryQueryKey = () => {
+  return [`/api/qc/summary`] as const;
+};
+
+export const getGetQcSummaryQueryOptions = <
+  TData = Awaited<ReturnType<typeof getQcSummary>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getQcSummary>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetQcSummaryQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getQcSummary>>> = ({
+    signal,
+  }) => getQcSummary({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getQcSummary>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetQcSummaryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getQcSummary>>
+>;
+export type GetQcSummaryQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Tổng hợp số lượng theo loại và trạng thái
+ */
+
+export function useGetQcSummary<
+  TData = Awaited<ReturnType<typeof getQcSummary>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getQcSummary>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetQcSummaryQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Duyệt nội dung
+ */
+export const getApproveQcUrl = () => {
+  return `/api/qc/approve`;
+};
+
+export const approveQc = async (
+  qcActionBody: QcActionBody,
+  options?: RequestInit,
+): Promise<ApproveQc200> => {
+  return customFetch<ApproveQc200>(getApproveQcUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(qcActionBody),
+  });
+};
+
+export const getApproveQcMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof approveQc>>,
+    TError,
+    { data: BodyType<QcActionBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof approveQc>>,
+  TError,
+  { data: BodyType<QcActionBody> },
+  TContext
+> => {
+  const mutationKey = ["approveQc"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof approveQc>>,
+    { data: BodyType<QcActionBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return approveQc(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ApproveQcMutationResult = NonNullable<
+  Awaited<ReturnType<typeof approveQc>>
+>;
+export type ApproveQcMutationBody = BodyType<QcActionBody>;
+export type ApproveQcMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Duyệt nội dung
+ */
+export const useApproveQc = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof approveQc>>,
+    TError,
+    { data: BodyType<QcActionBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof approveQc>>,
+  TError,
+  { data: BodyType<QcActionBody> },
+  TContext
+> => {
+  return useMutation(getApproveQcMutationOptions(options));
+};
+
+/**
+ * @summary Từ chối nội dung
+ */
+export const getRejectQcUrl = () => {
+  return `/api/qc/reject`;
+};
+
+export const rejectQc = async (
+  qcActionBody: QcActionBody,
+  options?: RequestInit,
+): Promise<RejectQc200> => {
+  return customFetch<RejectQc200>(getRejectQcUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(qcActionBody),
+  });
+};
+
+export const getRejectQcMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rejectQc>>,
+    TError,
+    { data: BodyType<QcActionBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof rejectQc>>,
+  TError,
+  { data: BodyType<QcActionBody> },
+  TContext
+> => {
+  const mutationKey = ["rejectQc"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof rejectQc>>,
+    { data: BodyType<QcActionBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return rejectQc(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RejectQcMutationResult = NonNullable<
+  Awaited<ReturnType<typeof rejectQc>>
+>;
+export type RejectQcMutationBody = BodyType<QcActionBody>;
+export type RejectQcMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Từ chối nội dung
+ */
+export const useRejectQc = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rejectQc>>,
+    TError,
+    { data: BodyType<QcActionBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof rejectQc>>,
+  TError,
+  { data: BodyType<QcActionBody> },
+  TContext
+> => {
+  return useMutation(getRejectQcMutationOptions(options));
+};
+
+/**
+ * @summary Lịch sử duyệt nội dung
+ */
+export const getGetQcHistoryUrl = (params?: GetQcHistoryParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/qc/history?${stringifiedParams}`
+    : `/api/qc/history`;
+};
+
+export const getQcHistory = async (
+  params?: GetQcHistoryParams,
+  options?: RequestInit,
+): Promise<QcHistoryItem[]> => {
+  return customFetch<QcHistoryItem[]>(getGetQcHistoryUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetQcHistoryQueryKey = (params?: GetQcHistoryParams) => {
+  return [`/api/qc/history`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetQcHistoryQueryOptions = <
+  TData = Awaited<ReturnType<typeof getQcHistory>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetQcHistoryParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getQcHistory>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetQcHistoryQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getQcHistory>>> = ({
+    signal,
+  }) => getQcHistory(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getQcHistory>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetQcHistoryQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getQcHistory>>
+>;
+export type GetQcHistoryQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Lịch sử duyệt nội dung
+ */
+
+export function useGetQcHistory<
+  TData = Awaited<ReturnType<typeof getQcHistory>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: GetQcHistoryParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getQcHistory>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetQcHistoryQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
 
 /**
  * @summary Request a presigned URL for file upload

@@ -26,6 +26,8 @@ tags:
     description: Thống kê tổng quan
   - name: Storage
     description: Object storage upload and serving endpoints.
+  - name: qc
+    description: Quản lý chất lượng (duyệt nội dung)
 
 paths:
   /healthz:
@@ -61,6 +63,10 @@ paths:
       summary: Danh sách khóa học
       parameters:
         - name: search
+          in: query
+          schema:
+            type: string
+        - name: onlyApproved
           in: query
           schema:
             type: string
@@ -160,6 +166,10 @@ paths:
           in: query
           schema:
             type: integer
+        - name: onlyApproved
+          in: query
+          schema:
+            type: string
       responses:
         "200":
           description: List of classes
@@ -397,6 +407,10 @@ paths:
           in: query
           schema:
             type: integer
+        - name: onlyApproved
+          in: query
+          schema:
+            type: string
       responses:
         "200":
           description: List of students
@@ -486,6 +500,10 @@ paths:
       summary: Danh sách giảng viên
       parameters:
         - name: search
+          in: query
+          schema:
+            type: string
+        - name: onlyApproved
           in: query
           schema:
             type: string
@@ -601,6 +619,10 @@ paths:
           in: query
           schema:
             type: string
+        - name: onlyApproved
+          in: query
+          schema:
+            type: string
       responses:
         "200":
           description: Students with certificate status
@@ -684,6 +706,116 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CertificateRecord"
+
+  /qc/items:
+    get:
+      operationId: listQcItems
+      tags: [qc]
+      summary: Danh sách mục cần duyệt theo loại và trạng thái
+      parameters:
+        - name: entityType
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of QC items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/QcItem"
+
+  /qc/summary:
+    get:
+      operationId: getQcSummary
+      tags: [qc]
+      summary: Tổng hợp số lượng theo loại và trạng thái
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QcSummary"
+
+  /qc/approve:
+    post:
+      operationId: approveQc
+      tags: [qc]
+      summary: Duyệt nội dung
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QcActionBody"
+      responses:
+        "200":
+          description: Approved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                required:
+                  - success
+
+  /qc/reject:
+    post:
+      operationId: rejectQc
+      tags: [qc]
+      summary: Từ chối nội dung
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QcActionBody"
+      responses:
+        "200":
+          description: Rejected
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                required:
+                  - success
+
+  /qc/history:
+    get:
+      operationId: getQcHistory
+      tags: [qc]
+      summary: Lịch sử duyệt nội dung
+      parameters:
+        - name: entityType
+          in: query
+          schema:
+            type: string
+        - name: entityId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: History
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/QcHistoryItem"
 
   /storage/uploads/request-url:
     post:
@@ -818,6 +950,12 @@ components:
           type: string
         duration:
           type: string
+        approvalStatus:
+          type: string
+        approvalNote:
+          type: string
+        approvedAt:
+          type: string
         createdAt:
           type: string
       required:
@@ -825,6 +963,7 @@ components:
         - name
         - content
         - duration
+        - approvalStatus
         - createdAt
 
     CreateCourseBody:
@@ -858,6 +997,12 @@ components:
           type: string
         studentCount:
           type: integer
+        approvalStatus:
+          type: string
+        approvalNote:
+          type: string
+        approvedAt:
+          type: string
         createdAt:
           type: string
       required:
@@ -868,6 +1013,7 @@ components:
         - startDate
         - endDate
         - studentCount
+        - approvalStatus
         - createdAt
 
     CreateClassBody:
@@ -910,6 +1056,12 @@ components:
           type: array
           items:
             type: string
+        approvalStatus:
+          type: string
+        approvalNote:
+          type: string
+        approvedAt:
+          type: string
         createdAt:
           type: string
       required:
@@ -919,6 +1071,7 @@ components:
         - sessionPeriod
         - lessonCount
         - content
+        - approvalStatus
         - createdAt
 
     CreateSessionBody:
@@ -962,6 +1115,8 @@ components:
         instructorId:
           type: integer
         supervisorName:
+          type: string
+        resultApprovalStatus:
           type: string
       required:
         - studentId
@@ -1024,12 +1179,29 @@ components:
           type: integer
         className:
           type: string
+        testScore:
+          type: string
+        grade:
+          type: string
+        approvalStatus:
+          type: string
+        approvalNote:
+          type: string
+        approvedAt:
+          type: string
+        resultApprovalStatus:
+          type: string
+        resultApprovalNote:
+          type: string
+        resultApprovedAt:
+          type: string
         createdAt:
           type: string
       required:
         - id
         - studentCode
         - fullName
+        - approvalStatus
         - createdAt
 
     CreateStudentBody:
@@ -1084,11 +1256,18 @@ components:
           type: string
         notes:
           type: string
+        approvalStatus:
+          type: string
+        approvalNote:
+          type: string
+        approvedAt:
+          type: string
         createdAt:
           type: string
       required:
         - id
         - fullName
+        - approvalStatus
         - createdAt
 
     CreateInstructorBody:
@@ -1207,6 +1386,106 @@ components:
           type: string
         locationLink:
           type: string
+
+    QcItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        subtitle:
+          type: string
+        detail:
+          type: string
+        approvalStatus:
+          type: string
+        approvalNote:
+          type: string
+        approvedAt:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - title
+        - approvalStatus
+        - createdAt
+
+    QcStatusCounts:
+      type: object
+      properties:
+        PENDING:
+          type: integer
+        APPROVED:
+          type: integer
+        REJECTED:
+          type: integer
+      required:
+        - PENDING
+        - APPROVED
+        - REJECTED
+
+    QcSummary:
+      type: object
+      properties:
+        course:
+          $ref: "#/components/schemas/QcStatusCounts"
+        class:
+          $ref: "#/components/schemas/QcStatusCounts"
+        student:
+          $ref: "#/components/schemas/QcStatusCounts"
+        instructor:
+          $ref: "#/components/schemas/QcStatusCounts"
+        session:
+          $ref: "#/components/schemas/QcStatusCounts"
+        result:
+          $ref: "#/components/schemas/QcStatusCounts"
+      required:
+        - course
+        - class
+        - student
+        - instructor
+        - session
+        - result
+
+    QcActionBody:
+      type: object
+      properties:
+        entityType:
+          type: string
+        entityId:
+          type: integer
+        note:
+          type: string
+      required:
+        - entityType
+        - entityId
+
+    QcHistoryItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        entityType:
+          type: string
+        entityId:
+          type: integer
+        action:
+          type: string
+        status:
+          type: string
+        note:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - entityType
+        - entityId
+        - action
+        - status
+        - createdAt
 
     UploadUrlRequest:
       type: object

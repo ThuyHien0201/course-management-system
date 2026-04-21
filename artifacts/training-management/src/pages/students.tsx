@@ -43,8 +43,8 @@ export default function StudentsPage() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
   const { data: students = [], isLoading } = useListStudents(search ? { search } : undefined);
-  const { data: instructors = [] } = useListInstructors();
-  const { data: classes = [] } = useListClasses();
+  const { data: instructors = [] } = useListInstructors({ onlyApproved: "true" });
+  const { data: classes = [] } = useListClasses({ onlyApproved: "true" });
   const createMutation = useCreateStudent();
   const updateMutation = useUpdateStudent();
   const deleteMutation = useDeleteStudent();

@@ -6,7 +6,8 @@ import {
   Users, 
   GraduationCap, 
   Award,
-  Library
+  Library,
+  ShieldCheck
 } from "lucide-react";
 import {
   Sidebar,
@@ -29,6 +30,7 @@ const navItems = [
   { title: "Học viên", href: "/hoc-vien", icon: Users },
   { title: "Giảng viên", href: "/giang-vien", icon: GraduationCap },
   { title: "Cấp chứng chỉ", href: "/chung-chi", icon: Award },
+  { title: "Quản lý chất lượng", href: "/qc", icon: ShieldCheck },
 ];
 
 export function AppLayout({ children }: { children: ReactNode }) {

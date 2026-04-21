@@ -13,9 +13,12 @@ export const sessionsTable = pgTable("sessions", {
   content: text("content").notNull(),
   instructorId: integer("instructor_id").references(() => instructorsTable.id),
   mediaUrls: json("media_urls").$type<string[]>().default([]),
+  approvalStatus: text("approval_status").notNull().default("PENDING"),
+  approvalNote: text("approval_note"),
+  approvedAt: timestamp("approved_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertSessionSchema = createInsertSchema(sessionsTable).omit({ id: true, createdAt: true });
+export const insertSessionSchema = createInsertSchema(sessionsTable).omit({ id: true, createdAt: true, approvalStatus: true, approvalNote: true, approvedAt: true });
 export type InsertSession = z.infer<typeof insertSessionSchema>;
 export type Session = typeof sessionsTable.$inferSelect;

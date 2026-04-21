@@ -9,6 +9,7 @@ import ClassesPage from "@/pages/classes";
 import StudentsPage from "@/pages/students";
 import InstructorsPage from "@/pages/instructors";
 import CertificatesPage from "@/pages/certificates";
+import QcPage from "@/pages/qc";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/hoc-vien" component={StudentsPage} />
       <Route path="/giang-vien" component={InstructorsPage} />
       <Route path="/chung-chi" component={CertificatesPage} />
+      <Route path="/qc" component={QcPage} />
       <Route component={NotFound} />
     </Switch>
   );

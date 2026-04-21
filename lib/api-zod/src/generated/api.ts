@@ -31,6 +31,9 @@ export const GetDashboardSummaryResponse = zod.object({
       startDate: zod.string(),
       endDate: zod.string(),
       studentCount: zod.number(),
+      approvalStatus: zod.string(),
+      approvalNote: zod.string().optional(),
+      approvedAt: zod.string().optional(),
       createdAt: zod.string(),
     }),
   ),
@@ -41,6 +44,7 @@ export const GetDashboardSummaryResponse = zod.object({
  */
 export const ListCoursesQueryParams = zod.object({
   search: zod.coerce.string().optional(),
+  onlyApproved: zod.coerce.string().optional(),
 });
 
 export const ListCoursesResponseItem = zod.object({
@@ -48,6 +52,9 @@ export const ListCoursesResponseItem = zod.object({
   name: zod.string(),
   content: zod.string(),
   duration: zod.string(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 export const ListCoursesResponse = zod.array(ListCoursesResponseItem);
@@ -73,6 +80,9 @@ export const GetCourseResponse = zod.object({
   name: zod.string(),
   content: zod.string(),
   duration: zod.string(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 
@@ -94,6 +104,9 @@ export const UpdateCourseResponse = zod.object({
   name: zod.string(),
   content: zod.string(),
   duration: zod.string(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 
@@ -110,6 +123,7 @@ export const DeleteCourseParams = zod.object({
 export const ListClassesQueryParams = zod.object({
   search: zod.coerce.string().optional(),
   courseId: zod.coerce.number().optional(),
+  onlyApproved: zod.coerce.string().optional(),
 });
 
 export const ListClassesResponseItem = zod.object({
@@ -120,6 +134,9 @@ export const ListClassesResponseItem = zod.object({
   startDate: zod.string(),
   endDate: zod.string(),
   studentCount: zod.number(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 export const ListClassesResponse = zod.array(ListClassesResponseItem);
@@ -149,6 +166,9 @@ export const GetClassResponse = zod.object({
   startDate: zod.string(),
   endDate: zod.string(),
   studentCount: zod.number(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 
@@ -174,6 +194,9 @@ export const UpdateClassResponse = zod.object({
   startDate: zod.string(),
   endDate: zod.string(),
   studentCount: zod.number(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 
@@ -201,6 +224,9 @@ export const ListClassSessionsResponseItem = zod.object({
   instructorId: zod.number().optional(),
   instructorName: zod.string().optional(),
   mediaUrls: zod.array(zod.string()).optional(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 export const ListClassSessionsResponse = zod.array(
@@ -250,6 +276,9 @@ export const UpdateSessionResponse = zod.object({
   instructorId: zod.number().optional(),
   instructorName: zod.string().optional(),
   mediaUrls: zod.array(zod.string()).optional(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 
@@ -277,6 +306,7 @@ export const ListClassStudentsResponseItem = zod.object({
   grade: zod.string().optional(),
   instructorId: zod.number().optional(),
   supervisorName: zod.string().optional(),
+  resultApprovalStatus: zod.string().optional(),
 });
 export const ListClassStudentsResponse = zod.array(
   ListClassStudentsResponseItem,
@@ -310,6 +340,7 @@ export const BulkUpdateClassStudentsResponse = zod.object({
 export const ListStudentsQueryParams = zod.object({
   search: zod.coerce.string().optional(),
   classId: zod.coerce.number().optional(),
+  onlyApproved: zod.coerce.string().optional(),
 });
 
 export const ListStudentsResponseItem = zod.object({
@@ -329,6 +360,14 @@ export const ListStudentsResponseItem = zod.object({
   instructorName: zod.string().optional(),
   classId: zod.number().optional(),
   className: zod.string().optional(),
+  testScore: zod.string().optional(),
+  grade: zod.string().optional(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
+  resultApprovalStatus: zod.string().optional(),
+  resultApprovalNote: zod.string().optional(),
+  resultApprovedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 export const ListStudentsResponse = zod.array(ListStudentsResponseItem);
@@ -376,6 +415,14 @@ export const GetStudentResponse = zod.object({
   instructorName: zod.string().optional(),
   classId: zod.number().optional(),
   className: zod.string().optional(),
+  testScore: zod.string().optional(),
+  grade: zod.string().optional(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
+  resultApprovalStatus: zod.string().optional(),
+  resultApprovalNote: zod.string().optional(),
+  resultApprovedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 
@@ -419,6 +466,14 @@ export const UpdateStudentResponse = zod.object({
   instructorName: zod.string().optional(),
   classId: zod.number().optional(),
   className: zod.string().optional(),
+  testScore: zod.string().optional(),
+  grade: zod.string().optional(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
+  resultApprovalStatus: zod.string().optional(),
+  resultApprovalNote: zod.string().optional(),
+  resultApprovedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 
@@ -434,6 +489,7 @@ export const DeleteStudentParams = zod.object({
  */
 export const ListInstructorsQueryParams = zod.object({
   search: zod.coerce.string().optional(),
+  onlyApproved: zod.coerce.string().optional(),
 });
 
 export const ListInstructorsResponseItem = zod.object({
@@ -445,6 +501,9 @@ export const ListInstructorsResponseItem = zod.object({
   email: zod.string().optional(),
   phone: zod.string().optional(),
   notes: zod.string().optional(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 export const ListInstructorsResponse = zod.array(ListInstructorsResponseItem);
@@ -478,6 +537,9 @@ export const GetInstructorResponse = zod.object({
   email: zod.string().optional(),
   phone: zod.string().optional(),
   notes: zod.string().optional(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 
@@ -507,6 +569,9 @@ export const UpdateInstructorResponse = zod.object({
   email: zod.string().optional(),
   phone: zod.string().optional(),
   notes: zod.string().optional(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 
@@ -528,6 +593,9 @@ export const ListCertificatesResponseItem = zod.object({
   startDate: zod.string(),
   endDate: zod.string(),
   studentCount: zod.number(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
   createdAt: zod.string(),
 });
 export const ListCertificatesResponse = zod.array(ListCertificatesResponseItem);
@@ -541,6 +609,7 @@ export const GetCertificateStudentsByClassParams = zod.object({
 
 export const GetCertificateStudentsByClassQueryParams = zod.object({
   search: zod.coerce.string().optional(),
+  onlyApproved: zod.coerce.string().optional(),
 });
 
 export const GetCertificateStudentsByClassResponseItem = zod.object({
@@ -631,6 +700,107 @@ export const UpdateCertificateResponse = zod.object({
   locationLink: zod.string().optional(),
   issuedAt: zod.string().optional(),
 });
+
+/**
+ * @summary Danh sách mục cần duyệt theo loại và trạng thái
+ */
+export const ListQcItemsQueryParams = zod.object({
+  entityType: zod.coerce.string(),
+  status: zod.coerce.string().optional(),
+});
+
+export const ListQcItemsResponseItem = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  subtitle: zod.string().optional(),
+  detail: zod.string().optional(),
+  approvalStatus: zod.string(),
+  approvalNote: zod.string().optional(),
+  approvedAt: zod.string().optional(),
+  createdAt: zod.string(),
+});
+export const ListQcItemsResponse = zod.array(ListQcItemsResponseItem);
+
+/**
+ * @summary Tổng hợp số lượng theo loại và trạng thái
+ */
+export const GetQcSummaryResponse = zod.object({
+  course: zod.object({
+    PENDING: zod.number(),
+    APPROVED: zod.number(),
+    REJECTED: zod.number(),
+  }),
+  class: zod.object({
+    PENDING: zod.number(),
+    APPROVED: zod.number(),
+    REJECTED: zod.number(),
+  }),
+  student: zod.object({
+    PENDING: zod.number(),
+    APPROVED: zod.number(),
+    REJECTED: zod.number(),
+  }),
+  instructor: zod.object({
+    PENDING: zod.number(),
+    APPROVED: zod.number(),
+    REJECTED: zod.number(),
+  }),
+  session: zod.object({
+    PENDING: zod.number(),
+    APPROVED: zod.number(),
+    REJECTED: zod.number(),
+  }),
+  result: zod.object({
+    PENDING: zod.number(),
+    APPROVED: zod.number(),
+    REJECTED: zod.number(),
+  }),
+});
+
+/**
+ * @summary Duyệt nội dung
+ */
+export const ApproveQcBody = zod.object({
+  entityType: zod.string(),
+  entityId: zod.number(),
+  note: zod.string().optional(),
+});
+
+export const ApproveQcResponse = zod.object({
+  success: zod.boolean(),
+});
+
+/**
+ * @summary Từ chối nội dung
+ */
+export const RejectQcBody = zod.object({
+  entityType: zod.string(),
+  entityId: zod.number(),
+  note: zod.string().optional(),
+});
+
+export const RejectQcResponse = zod.object({
+  success: zod.boolean(),
+});
+
+/**
+ * @summary Lịch sử duyệt nội dung
+ */
+export const GetQcHistoryQueryParams = zod.object({
+  entityType: zod.coerce.string().optional(),
+  entityId: zod.coerce.number().optional(),
+});
+
+export const GetQcHistoryResponseItem = zod.object({
+  id: zod.number(),
+  entityType: zod.string(),
+  entityId: zod.number(),
+  action: zod.string(),
+  status: zod.string(),
+  note: zod.string().optional(),
+  createdAt: zod.string(),
+});
+export const GetQcHistoryResponse = zod.array(GetQcHistoryResponseItem);
 
 /**
  * @summary Request a presigned URL for file upload

@@ -8,6 +8,7 @@ import instructorsRouter from "./instructors";
 import certificatesRouter from "./certificates";
 import dashboardRouter from "./dashboard";
 import storageRouter from "./storage";
+import qcRouter from "./qc";
 
 const router: IRouter = Router();
 
@@ -20,5 +21,6 @@ router.use("/instructors", instructorsRouter);
 router.use("/certificates", certificatesRouter);
 router.use("/dashboard", dashboardRouter);
 router.use(storageRouter);
+router.use("/qc", qcRouter);
 
 export default router;

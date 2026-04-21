@@ -21,6 +21,9 @@ export interface ClassWithDetails {
   startDate: string;
   endDate: string;
   studentCount: number;
+  approvalStatus: string;
+  approvalNote?: string;
+  approvedAt?: string;
   createdAt: string;
 }
 
@@ -37,6 +40,9 @@ export interface Course {
   name: string;
   content: string;
   duration: string;
+  approvalStatus: string;
+  approvalNote?: string;
+  approvedAt?: string;
   createdAt: string;
 }
 
@@ -63,6 +69,9 @@ export interface Session {
   instructorId?: number;
   instructorName?: string;
   mediaUrls?: string[];
+  approvalStatus: string;
+  approvalNote?: string;
+  approvedAt?: string;
   createdAt: string;
 }
 
@@ -84,6 +93,7 @@ export interface ClassStudentDetail {
   grade?: string;
   instructorId?: number;
   supervisorName?: string;
+  resultApprovalStatus?: string;
 }
 
 export type BulkUpdateStudentsBodyStudentsItem = {
@@ -114,6 +124,14 @@ export interface StudentWithDetails {
   instructorName?: string;
   classId?: number;
   className?: string;
+  testScore?: string;
+  grade?: string;
+  approvalStatus: string;
+  approvalNote?: string;
+  approvedAt?: string;
+  resultApprovalStatus?: string;
+  resultApprovalNote?: string;
+  resultApprovedAt?: string;
   createdAt: string;
 }
 
@@ -142,6 +160,9 @@ export interface Instructor {
   email?: string;
   phone?: string;
   notes?: string;
+  approvalStatus: string;
+  approvalNote?: string;
+  approvedAt?: string;
   createdAt: string;
 }
 
@@ -201,6 +222,48 @@ export interface UpdateCertificateBody {
   locationLink?: string;
 }
 
+export interface QcItem {
+  id: number;
+  title: string;
+  subtitle?: string;
+  detail?: string;
+  approvalStatus: string;
+  approvalNote?: string;
+  approvedAt?: string;
+  createdAt: string;
+}
+
+export interface QcStatusCounts {
+  PENDING: number;
+  APPROVED: number;
+  REJECTED: number;
+}
+
+export interface QcSummary {
+  course: QcStatusCounts;
+  class: QcStatusCounts;
+  student: QcStatusCounts;
+  instructor: QcStatusCounts;
+  session: QcStatusCounts;
+  result: QcStatusCounts;
+}
+
+export interface QcActionBody {
+  entityType: string;
+  entityId: number;
+  note?: string;
+}
+
+export interface QcHistoryItem {
+  id: number;
+  entityType: string;
+  entityId: number;
+  action: string;
+  status: string;
+  note?: string;
+  createdAt: string;
+}
+
 export interface UploadUrlRequest {
   name: string;
   size: number;
@@ -215,11 +278,13 @@ export interface UploadUrlResponse {
 
 export type ListCoursesParams = {
   search?: string;
+  onlyApproved?: string;
 };
 
 export type ListClassesParams = {
   search?: string;
   courseId?: number;
+  onlyApproved?: string;
 };
 
 export type BulkUpdateClassStudents200 = {
@@ -229,12 +294,33 @@ export type BulkUpdateClassStudents200 = {
 export type ListStudentsParams = {
   search?: string;
   classId?: number;
+  onlyApproved?: string;
 };
 
 export type ListInstructorsParams = {
   search?: string;
+  onlyApproved?: string;
 };
 
 export type GetCertificateStudentsByClassParams = {
   search?: string;
+  onlyApproved?: string;
+};
+
+export type ListQcItemsParams = {
+  entityType: string;
+  status?: string;
+};
+
+export type ApproveQc200 = {
+  success: boolean;
+};
+
+export type RejectQc200 = {
+  success: boolean;
+};
+
+export type GetQcHistoryParams = {
+  entityType?: string;
+  entityId?: number;
 };

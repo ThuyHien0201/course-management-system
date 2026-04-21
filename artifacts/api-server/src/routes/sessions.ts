@@ -23,6 +23,7 @@ async function enrichSession(s: typeof sessionsTable.$inferSelect) {
     ...s,
     instructorName: instructor?.fullName ?? null,
     mediaUrls: (s.mediaUrls as string[]) ?? [],
+    approvedAt: s.approvedAt?.toISOString() ?? null,
     createdAt: s.createdAt.toISOString(),
   };
 }
@@ -47,7 +48,7 @@ router.put("/:sessionId", async (req, res) => {
   const body = sessionBodySchema.parse(req.body);
   const [session] = await db
     .update(sessionsTable)
-    .set(body)
+    .set({ ...body, approvalStatus: "PENDING", approvalNote: null, approvedAt: null })
     .where(and(eq(sessionsTable.id, sessionId), eq(sessionsTable.classId, classId)))
     .returning();
   if (!session) return res.status(404).json({ error: "Not found" });

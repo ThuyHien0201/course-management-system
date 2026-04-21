@@ -65,11 +65,12 @@ router.get("/", async (req, res) => {
 
 router.get("/:classId/students", async (req, res) => {
   const classId = Number(req.params.classId);
-  const { search } = req.query;
+  const { search, onlyApproved } = req.query;
   const [cls] = await db.select().from(classesTable).where(eq(classesTable.id, classId));
   if (!cls) return res.status(404).json({ error: "Not found" });
   const [course] = await db.select().from(coursesTable).where(eq(coursesTable.id, cls.courseId));
   let students = await db.select().from(studentsTable).where(eq(studentsTable.classId, classId));
+  if (onlyApproved === "true") students = students.filter((s) => s.resultApprovalStatus === "APPROVED");
   if (search && typeof search === "string") {
     const q = search.toLowerCase();
     students = students.filter(s => s.fullName.toLowerCase().includes(q) || s.studentCode.toLowerCase().includes(q));

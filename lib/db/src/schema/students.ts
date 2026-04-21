@@ -21,9 +21,19 @@ export const studentsTable = pgTable("students", {
   classId: integer("class_id").references(() => classesTable.id),
   testScore: text("test_score"),
   grade: text("grade"),
+  approvalStatus: text("approval_status").notNull().default("PENDING"),
+  approvalNote: text("approval_note"),
+  approvedAt: timestamp("approved_at"),
+  resultApprovalStatus: text("result_approval_status"),
+  resultApprovalNote: text("result_approval_note"),
+  resultApprovedAt: timestamp("result_approved_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertStudentSchema = createInsertSchema(studentsTable).omit({ id: true, createdAt: true });
+export const insertStudentSchema = createInsertSchema(studentsTable).omit({
+  id: true, createdAt: true,
+  approvalStatus: true, approvalNote: true, approvedAt: true,
+  resultApprovalStatus: true, resultApprovalNote: true, resultApprovedAt: true,
+});
 export type InsertStudent = z.infer<typeof insertStudentSchema>;
 export type Student = typeof studentsTable.$inferSelect;

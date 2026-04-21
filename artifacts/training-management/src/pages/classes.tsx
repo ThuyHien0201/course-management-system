@@ -83,8 +83,8 @@ export default function ClassesPage() {
   const [studentsDirty, setStudentsDirty] = useState(false);
 
   const { data: classes = [], isLoading } = useListClasses(search ? { search } : undefined);
-  const { data: courses = [] } = useListCourses();
-  const { data: instructors = [] } = useListInstructors();
+  const { data: courses = [] } = useListCourses({ onlyApproved: "true" });
+  const { data: instructors = [] } = useListInstructors({ onlyApproved: "true" });
   const createMutation = useCreateClass();
   const updateMutation = useUpdateClass();
   const deleteMutation = useDeleteClass();

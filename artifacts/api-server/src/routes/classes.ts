@@ -32,13 +32,15 @@ async function buildClassWithDetails(c: typeof classesTable.$inferSelect) {
     ...c,
     courseName: course?.name ?? "",
     studentCount: count,
+    approvedAt: c.approvedAt?.toISOString() ?? null,
     createdAt: c.createdAt.toISOString(),
   };
 }
 
 router.get("/", async (req, res) => {
-  const { search, courseId } = req.query;
+  const { search, courseId, onlyApproved } = req.query;
   let rows = await db.select().from(classesTable).orderBy(classesTable.createdAt);
+  if (onlyApproved === "true") rows = rows.filter((r) => r.approvalStatus === "APPROVED");
   if (courseId) rows = rows.filter((r) => r.courseId === Number(courseId));
   if (search && typeof search === "string") {
     const q = search.toLowerCase();
@@ -64,7 +66,7 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const id = Number(req.params.id);
   const body = classBodySchema.parse(req.body);
-  const [cls] = await db.update(classesTable).set(body).where(eq(classesTable.id, id)).returning();
+  const [cls] = await db.update(classesTable).set({ ...body, approvalStatus: "PENDING", approvalNote: null, approvedAt: null }).where(eq(classesTable.id, id)).returning();
   if (!cls) return res.status(404).json({ error: "Not found" });
   res.json(await buildClassWithDetails(cls));
 });
@@ -91,21 +93,25 @@ router.get("/:classId/students", async (req, res) => {
       grade: s.grade ?? null,
       instructorId: s.instructorId ?? null,
       supervisorName: instructor?.fullName ?? null,
+      resultApprovalStatus: s.resultApprovalStatus ?? null,
     };
   }));
   res.json(result);
 });
 
 router.put("/:classId/students", async (req, res) => {
-  const classId = Number(req.params.classId);
   const body = bulkUpdateStudentsSchema.parse(req.body);
   await Promise.all(body.students.map(async (item) => {
+    const hasResult = (item.testScore && item.testScore !== "") || (item.grade && item.grade !== "");
     await db
       .update(studentsTable)
       .set({
         testScore: item.testScore,
         grade: item.grade,
         instructorId: item.instructorId,
+        resultApprovalStatus: hasResult ? "PENDING" : null,
+        resultApprovalNote: null,
+        resultApprovedAt: null,
       })
       .where(eq(studentsTable.id, item.studentId));
   }));

@@ -33,13 +33,16 @@ async function enrichStudent(s: typeof studentsTable.$inferSelect) {
     ...s,
     instructorName: instructor?.fullName ?? null,
     className: cls?.name ?? null,
+    approvedAt: s.approvedAt?.toISOString() ?? null,
+    resultApprovedAt: s.resultApprovedAt?.toISOString() ?? null,
     createdAt: s.createdAt.toISOString(),
   };
 }
 
 router.get("/", async (req, res) => {
-  const { search, classId } = req.query;
+  const { search, classId, onlyApproved } = req.query;
   let rows = await db.select().from(studentsTable).orderBy(studentsTable.createdAt);
+  if (onlyApproved === "true") rows = rows.filter((r) => r.approvalStatus === "APPROVED");
   if (classId) rows = rows.filter((r) => r.classId === Number(classId));
   if (search && typeof search === "string") {
     const q = search.toLowerCase();
@@ -65,7 +68,7 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const id = Number(req.params.id);
   const body = studentBodySchema.parse(req.body);
-  const [student] = await db.update(studentsTable).set(body).where(eq(studentsTable.id, id)).returning();
+  const [student] = await db.update(studentsTable).set({ ...body, approvalStatus: "PENDING", approvalNote: null, approvedAt: null }).where(eq(studentsTable.id, id)).returning();
   if (!student) return res.status(404).json({ error: "Not found" });
   res.json(await enrichStudent(student));
 });
