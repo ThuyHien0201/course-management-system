@@ -483,14 +483,14 @@ export default function ClassesPage() {
                                     </td>
                                     <td className="px-3 py-2">
                                       <Select
-                                        value={s.instructorId}
-                                        onValueChange={(v) => updateStudentRow(idx, "instructorId", v)}
+                                        value={s.instructorId || "__none__"}
+                                        onValueChange={(v) => updateStudentRow(idx, "instructorId", v === "__none__" ? "" : v)}
                                       >
                                         <SelectTrigger className="h-7 text-xs min-w-32">
                                           <SelectValue placeholder="Chọn GV..." />
                                         </SelectTrigger>
                                         <SelectContent>
-                                          <SelectItem value="">— Không có —</SelectItem>
+                                          <SelectItem value="__none__">— Không có —</SelectItem>
                                           {instructors.map((i) => (
                                             <SelectItem key={i.id} value={String(i.id)}>
                                               {i.fullName}
