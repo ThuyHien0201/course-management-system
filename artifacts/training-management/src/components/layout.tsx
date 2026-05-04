@@ -7,7 +7,9 @@ import {
   GraduationCap, 
   Award,
   Library,
-  ShieldCheck
+  ShieldCheck,
+  LogOut,
+  UserCog,
 } from "lucide-react";
 import {
   Sidebar,
@@ -21,20 +23,40 @@ import {
   SidebarMenuButton,
   SidebarProvider,
   SidebarInset,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/auth";
 
-const navItems = [
+const ROLE_LABELS: Record<string, { label: string; color: string }> = {
+  staff: { label: "Nhân viên", color: "bg-blue-100 text-blue-700 border-blue-200" },
+  issuer: { label: "Cấp chứng chỉ", color: "bg-amber-100 text-amber-700 border-amber-200" },
+  qc: { label: "QC", color: "bg-green-100 text-green-700 border-green-200" },
+};
+
+type NavItem = { title: string; href: string; icon: React.ElementType; roles?: string[] };
+
+const navItems: NavItem[] = [
   { title: "Tổng quan", href: "/", icon: LayoutDashboard },
-  { title: "Khóa học", href: "/khoa-hoc", icon: BookOpen },
-  { title: "Lớp học", href: "/lop-hoc", icon: Library },
-  { title: "Học viên", href: "/hoc-vien", icon: Users },
-  { title: "Giảng viên", href: "/giang-vien", icon: GraduationCap },
+  { title: "Khóa học", href: "/khoa-hoc", icon: BookOpen, roles: ["staff", "qc"] },
+  { title: "Lớp học", href: "/lop-hoc", icon: Library, roles: ["staff", "qc"] },
+  { title: "Học viên", href: "/hoc-vien", icon: Users, roles: ["staff", "qc"] },
+  { title: "Giảng viên", href: "/giang-vien", icon: GraduationCap, roles: ["staff", "qc"] },
   { title: "Cấp chứng chỉ", href: "/chung-chi", icon: Award },
-  { title: "Quản lý chất lượng", href: "/qc", icon: ShieldCheck },
+  { title: "Quản lý chất lượng", href: "/qc", icon: ShieldCheck, roles: ["qc"] },
+  { title: "Quản lý tài khoản", href: "/tai-khoan", icon: UserCog, roles: ["qc"] },
 ];
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
+  const { user, logout } = useAuth();
+  const roleInfo = user ? ROLE_LABELS[user.role] : null;
+
+  const visibleItems = navItems.filter((item) => {
+    if (!item.roles) return true;
+    return user && item.roles.includes(user.role);
+  });
 
   return (
     <SidebarProvider>
@@ -55,7 +77,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <SidebarGroupLabel>Menu Chính</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {navItems.map((item) => {
+                {visibleItems.map((item) => {
                   const isActive = location === item.href || 
                                   (item.href !== "/" && location.startsWith(item.href));
                   return (
@@ -73,6 +95,35 @@ export function AppLayout({ children }: { children: ReactNode }) {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
+        <SidebarFooter className="border-t p-4 space-y-3">
+          {user && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
+                  {user.displayName.charAt(0)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-medium truncate">{user.displayName}</p>
+                  <p className="text-xs text-muted-foreground truncate">@{user.username}</p>
+                </div>
+              </div>
+              {roleInfo && (
+                <Badge className={`text-xs w-full justify-center ${roleInfo.color}`}>
+                  {roleInfo.label}
+                </Badge>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full gap-2 text-muted-foreground hover:text-destructive"
+                onClick={logout}
+              >
+                <LogOut className="h-4 w-4" />
+                Đăng xuất
+              </Button>
+            </div>
+          )}
+        </SidebarFooter>
       </Sidebar>
       <SidebarInset>
         <main className="flex-1">

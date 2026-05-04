@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { AppLayout } from "@/components/layout";
+import { StatusBadge } from "@/components/status-badge";
+import { useAuth } from "@/contexts/auth";
 import {
   useListCourses,
   useCreateCourse,
@@ -24,12 +26,15 @@ const emptyForm: CourseForm = { name: "", content: "", duration: "" };
 
 export default function CoursesPage() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState<CourseForm>(emptyForm);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  const canEdit = user?.role === "staff";
 
   const { data: courses = [], isLoading } = useListCourses(search ? { search } : undefined);
   const createMutation = useCreateCourse();
@@ -56,7 +61,7 @@ export default function CoursesPage() {
         toast({ title: "Cập nhật thành công" });
       } else {
         await createMutation.mutateAsync({ data: form });
-        toast({ title: "Tạo khóa học thành công" });
+        toast({ title: "Tạo khóa học thành công — đang chờ QC duyệt" });
       }
       setOpen(false);
       invalidate();
@@ -85,9 +90,11 @@ export default function CoursesPage() {
             <h1 className="text-3xl font-bold tracking-tight text-foreground">Khóa học</h1>
             <p className="text-muted-foreground mt-1">Quản lý danh sách khóa học đào tạo</p>
           </div>
-          <Button onClick={openCreate} className="gap-2">
-            <Plus className="h-4 w-4" /> Thêm khóa học
-          </Button>
+          {canEdit && (
+            <Button onClick={openCreate} className="gap-2">
+              <Plus className="h-4 w-4" /> Thêm khóa học
+            </Button>
+          )}
         </div>
 
         <div className="relative">
@@ -115,18 +122,23 @@ export default function CoursesPage() {
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">
                     <CardTitle className="text-base leading-tight">{course.name}</CardTitle>
-                    <div className="flex gap-1 shrink-0">
-                      <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEdit(course)}>
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setDeleteId(course.id)}>
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
+                    {canEdit && (
+                      <div className="flex gap-1 shrink-0">
+                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEdit(course)}>
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setDeleteId(course.id)}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
-                  <Badge variant="secondary" className="w-fit gap-1 text-xs">
-                    <Clock className="h-3 w-3" /> {course.duration}
-                  </Badge>
+                  <div className="flex items-center gap-2 flex-wrap mt-1">
+                    <Badge variant="secondary" className="w-fit gap-1 text-xs">
+                      <Clock className="h-3 w-3" /> {course.duration}
+                    </Badge>
+                    <StatusBadge status={(course as { approvalStatus?: string }).approvalStatus} />
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground line-clamp-3">{course.content}</p>
@@ -136,46 +148,55 @@ export default function CoursesPage() {
           </div>
         )}
 
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle>{editId ? "Cập nhật khóa học" : "Thêm khóa học mới"}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-2">
-              <div className="space-y-1.5">
-                <Label>Tên khóa học <span className="text-destructive">*</span></Label>
-                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="VD: An toàn lao động cơ bản" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Nội dung <span className="text-destructive">*</span></Label>
-                <Textarea rows={4} value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} placeholder="Mô tả nội dung khóa học..." />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Thời lượng <span className="text-destructive">*</span></Label>
-                <Input value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} placeholder="VD: 24 tiết (3 ngày)" />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setOpen(false)}>Hủy</Button>
-              <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending}>
-                {editId ? "Cập nhật" : "Tạo khóa học"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        {canEdit && (
+          <>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogContent className="max-w-lg">
+                <DialogHeader>
+                  <DialogTitle>{editId ? "Cập nhật khóa học" : "Thêm khóa học mới"}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-2">
+                  <div className="space-y-1.5">
+                    <Label>Tên khóa học <span className="text-destructive">*</span></Label>
+                    <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="VD: An toàn lao động cơ bản" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Nội dung <span className="text-destructive">*</span></Label>
+                    <Textarea rows={4} value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} placeholder="Mô tả nội dung khóa học..." />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Thời lượng <span className="text-destructive">*</span></Label>
+                    <Input value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} placeholder="VD: 24 tiết (3 ngày)" />
+                  </div>
+                  {!editId && (
+                    <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded p-2">
+                      Sau khi tạo, khóa học sẽ ở trạng thái <strong>Chờ duyệt</strong> và cần QC phê duyệt trước khi sử dụng.
+                    </p>
+                  )}
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setOpen(false)}>Hủy</Button>
+                  <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending}>
+                    {editId ? "Cập nhật" : "Tạo khóa học"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
-        <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
-              <AlertDialogDescription>Bạn có chắc muốn xóa khóa học này? Hành động không thể hoàn tác.</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Xóa</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+            <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
+                  <AlertDialogDescription>Bạn có chắc muốn xóa khóa học này? Hành động không thể hoàn tác.</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Hủy</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Xóa</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        )}
       </div>
     </AppLayout>
   );

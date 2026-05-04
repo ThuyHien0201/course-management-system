@@ -11,6 +11,9 @@ export const certificatesTable = pgTable("certificates", {
   instructorId: integer("instructor_id").references(() => instructorsTable.id),
   printLocation: text("print_location"),
   locationLink: text("location_link"),
+  approvalStatus: text("approval_status").notNull().default("PENDING"),
+  approvalNote: text("approval_note"),
+  approvedAt: timestamp("approved_at"),
   issuedAt: timestamp("issued_at").defaultNow().notNull(),
 }, (t) => [
   primaryKey({ columns: [t.studentId, t.classId] })

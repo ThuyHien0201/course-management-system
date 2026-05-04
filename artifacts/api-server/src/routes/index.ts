@@ -9,9 +9,11 @@ import certificatesRouter from "./certificates";
 import dashboardRouter from "./dashboard";
 import storageRouter from "./storage";
 import qcRouter from "./qc";
+import authRouter from "./auth";
 
 const router: IRouter = Router();
 
+router.use("/auth", authRouter);
 router.use(healthRouter);
 router.use("/courses", coursesRouter);
 router.use("/classes", classesRouter);

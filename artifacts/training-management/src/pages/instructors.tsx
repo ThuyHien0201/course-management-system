@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { AppLayout } from "@/components/layout";
+import { StatusBadge } from "@/components/status-badge";
+import { useAuth } from "@/contexts/auth";
 import {
   useListInstructors,
   useCreateInstructor,
@@ -20,24 +22,22 @@ import { Plus, Search, Pencil, Trash2, GraduationCap, Mail, Phone } from "lucide
 import { useToast } from "@/hooks/use-toast";
 
 type InstructorForm = {
-  fullName: string;
-  academicTitle: string;
-  position: string;
-  specialization: string;
-  email: string;
-  phone: string;
-  notes: string;
+  fullName: string; academicTitle: string; position: string;
+  specialization: string; email: string; phone: string; notes: string;
 };
 const emptyForm: InstructorForm = { fullName: "", academicTitle: "", position: "", specialization: "", email: "", phone: "", notes: "" };
 
 export default function InstructorsPage() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState<InstructorForm>(emptyForm);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  const canEdit = user?.role === "staff";
 
   const { data: instructors = [], isLoading } = useListInstructors(search ? { search } : undefined);
   const createMutation = useCreateInstructor();
@@ -50,13 +50,9 @@ export default function InstructorsPage() {
   const openEdit = (i: typeof instructors[0]) => {
     setEditId(i.id);
     setForm({
-      fullName: i.fullName,
-      academicTitle: i.academicTitle ?? "",
-      position: i.position ?? "",
-      specialization: i.specialization ?? "",
-      email: i.email ?? "",
-      phone: i.phone ?? "",
-      notes: i.notes ?? "",
+      fullName: i.fullName, academicTitle: i.academicTitle ?? "",
+      position: i.position ?? "", specialization: i.specialization ?? "",
+      email: i.email ?? "", phone: i.phone ?? "", notes: i.notes ?? "",
     });
     setOpen(true);
   };
@@ -81,7 +77,7 @@ export default function InstructorsPage() {
         toast({ title: "Cập nhật thành công" });
       } else {
         await createMutation.mutateAsync({ data });
-        toast({ title: "Thêm giảng viên thành công" });
+        toast({ title: "Thêm giảng viên thành công — đang chờ QC duyệt" });
       }
       setOpen(false);
       invalidate();
@@ -113,9 +109,11 @@ export default function InstructorsPage() {
             <h1 className="text-3xl font-bold tracking-tight text-foreground">Giảng viên</h1>
             <p className="text-muted-foreground mt-1">Quản lý danh sách giảng viên</p>
           </div>
-          <Button onClick={openCreate} className="gap-2">
-            <Plus className="h-4 w-4" /> Thêm giảng viên
-          </Button>
+          {canEdit && (
+            <Button onClick={openCreate} className="gap-2">
+              <Plus className="h-4 w-4" /> Thêm giảng viên
+            </Button>
+          )}
         </div>
 
         <div className="relative">
@@ -142,18 +140,23 @@ export default function InstructorsPage() {
                         <p className="text-xs text-muted-foreground mt-0.5">{instructor.academicTitle}</p>
                       )}
                     </div>
-                    <div className="flex gap-1 shrink-0">
-                      <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEdit(instructor)}>
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setDeleteId(instructor.id)}>
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
+                    {canEdit && (
+                      <div className="flex gap-1 shrink-0">
+                        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEdit(instructor)}>
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setDeleteId(instructor.id)}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  {instructor.position && <Badge variant="secondary" className="text-xs">{instructor.position}</Badge>}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {instructor.position && <Badge variant="secondary" className="text-xs">{instructor.position}</Badge>}
+                    <StatusBadge status={(instructor as { approvalStatus?: string }).approvalStatus} />
+                  </div>
                   {instructor.specialization && (
                     <p className="text-xs text-muted-foreground"><span className="font-medium">Chuyên môn:</span> {instructor.specialization}</p>
                   )}
@@ -176,62 +179,71 @@ export default function InstructorsPage() {
           </div>
         )}
 
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{editId ? "Cập nhật giảng viên" : "Thêm giảng viên mới"}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-2">
-              <div className="space-y-1.5">
-                <Label>Họ và tên (kèm học vị) <span className="text-destructive">*</span></Label>
-                <Input value={form.fullName} onChange={f("fullName")} placeholder="VD: TS. Nguyễn Văn A" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Học vị</Label>
-                <Input value={form.academicTitle} onChange={f("academicTitle")} placeholder="VD: Tiến sĩ (TS.)" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Chức vụ</Label>
-                <Input value={form.position} onChange={f("position")} placeholder="VD: Trưởng bộ môn" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Chuyên môn</Label>
-                <Input value={form.specialization} onChange={f("specialization")} placeholder="VD: ISO 9001, Quản lý chất lượng" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Email</Label>
-                <Input type="email" value={form.email} onChange={f("email")} placeholder="email@example.com" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Số điện thoại</Label>
-                <Input value={form.phone} onChange={f("phone")} placeholder="09xx xxx xxx" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Ghi chú</Label>
-                <Textarea rows={3} value={form.notes} onChange={f("notes")} placeholder="Ghi chú thêm..." />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setOpen(false)}>Hủy</Button>
-              <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending}>
-                {editId ? "Cập nhật" : "Thêm giảng viên"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        {canEdit && (
+          <>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>{editId ? "Cập nhật giảng viên" : "Thêm giảng viên mới"}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-2">
+                  <div className="space-y-1.5">
+                    <Label>Họ và tên (kèm học vị) <span className="text-destructive">*</span></Label>
+                    <Input value={form.fullName} onChange={f("fullName")} placeholder="VD: TS. Nguyễn Văn A" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Học vị</Label>
+                    <Input value={form.academicTitle} onChange={f("academicTitle")} placeholder="VD: Tiến sĩ (TS.)" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Chức vụ</Label>
+                    <Input value={form.position} onChange={f("position")} placeholder="VD: Trưởng bộ môn" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Chuyên môn</Label>
+                    <Input value={form.specialization} onChange={f("specialization")} placeholder="VD: ISO 9001, Quản lý chất lượng" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Email</Label>
+                    <Input type="email" value={form.email} onChange={f("email")} placeholder="email@example.com" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Số điện thoại</Label>
+                    <Input value={form.phone} onChange={f("phone")} placeholder="09xx xxx xxx" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Ghi chú</Label>
+                    <Textarea rows={3} value={form.notes} onChange={f("notes")} placeholder="Ghi chú thêm..." />
+                  </div>
+                  {!editId && (
+                    <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded p-2">
+                      Sau khi thêm, giảng viên sẽ ở trạng thái <strong>Chờ duyệt</strong> và cần QC phê duyệt.
+                    </p>
+                  )}
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setOpen(false)}>Hủy</Button>
+                  <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending}>
+                    {editId ? "Cập nhật" : "Thêm giảng viên"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
-        <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
-              <AlertDialogDescription>Bạn có chắc muốn xóa giảng viên này?</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Xóa</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+            <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
+                  <AlertDialogDescription>Bạn có chắc muốn xóa giảng viên này?</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Hủy</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Xóa</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        )}
       </div>
     </AppLayout>
   );

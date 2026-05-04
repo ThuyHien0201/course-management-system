@@ -22,7 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { Check, X, History as HistoryIcon, ShieldCheck } from "lucide-react";
 
-type EntityType = "course" | "class" | "student" | "instructor" | "session" | "result";
+type EntityType = "course" | "class" | "student" | "instructor" | "session" | "result" | "certificate";
 type Status = "PENDING" | "APPROVED" | "REJECTED";
 
 const ENTITY_LABELS: Record<EntityType, string> = {
@@ -31,19 +31,20 @@ const ENTITY_LABELS: Record<EntityType, string> = {
   student: "Học viên",
   instructor: "Giảng viên",
   session: "Buổi học",
-  result: "Kết quả học tập",
+  result: "Kết quả HT",
+  certificate: "Chứng chỉ",
 };
 
 function StatusBadge({ status }: { status: string }) {
-  if (status === "APPROVED") return <Badge className="bg-green-600 hover:bg-green-700">Đã duyệt</Badge>;
-  if (status === "REJECTED") return <Badge variant="destructive">Từ chối</Badge>;
-  return <Badge variant="secondary">Chờ duyệt</Badge>;
+  if (status === "APPROVED") return <Badge className="bg-green-100 text-green-700 border-green-200">Đã duyệt</Badge>;
+  if (status === "REJECTED") return <Badge className="bg-red-100 text-red-700 border-red-200">Từ chối</Badge>;
+  return <Badge className="bg-amber-100 text-amber-700 border-amber-200">Chờ duyệt</Badge>;
 }
 
 export default function QcPage() {
   const [entityType, setEntityType] = useState<EntityType>("course");
   const [status, setStatus] = useState<Status>("PENDING");
-  const [actionDialog, setActionDialog] = useState<{ open: boolean; mode: "approve" | "reject"; entityId?: number; entityType?: EntityType }>({ open: false, mode: "approve" });
+  const [actionDialog, setActionDialog] = useState<{ open: boolean; mode: "approve" | "reject"; entityId?: number; entityId2?: number; entityType?: EntityType }>({ open: false, mode: "approve" });
   const [historyDialog, setHistoryDialog] = useState<{ open: boolean; entityType?: EntityType; entityId?: number; title?: string }>({ open: false });
   const [note, setNote] = useState("");
 
@@ -58,26 +59,28 @@ export default function QcPage() {
   const refresh = () => {
     qc.invalidateQueries({ queryKey: getListQcItemsQueryKey({ entityType, status }) });
     qc.invalidateQueries({ queryKey: getGetQcSummaryQueryKey() });
-    if (historyDialog.entityType && historyDialog.entityId) {
-      qc.invalidateQueries({ queryKey: getGetQcHistoryQueryKey({ entityType: historyDialog.entityType, entityId: historyDialog.entityId }) });
-    }
   };
 
   const submitAction = async () => {
     if (!actionDialog.entityId || !actionDialog.entityType) return;
-    const data = { entityType: actionDialog.entityType, entityId: actionDialog.entityId, note: note || undefined };
+    const data = {
+      entityType: actionDialog.entityType,
+      entityId: actionDialog.entityId,
+      entityId2: actionDialog.entityId2,
+      note: note || undefined,
+    };
     try {
       if (actionDialog.mode === "approve") {
         await approveM.mutateAsync({ data });
-        toast({ title: "Đã duyệt", description: "Mục đã được phê duyệt." });
+        toast({ title: "Đã duyệt thành công" });
       } else {
         await rejectM.mutateAsync({ data });
-        toast({ title: "Đã từ chối", description: "Mục đã bị từ chối." });
+        toast({ title: "Đã từ chối" });
       }
       setActionDialog({ open: false, mode: "approve" });
       setNote("");
       refresh();
-    } catch (e) {
+    } catch {
       toast({ title: "Lỗi", description: "Không thể thực hiện hành động.", variant: "destructive" });
     }
   };
@@ -94,15 +97,15 @@ export default function QcPage() {
         </div>
 
         <Tabs value={entityType} onValueChange={(v) => setEntityType(v as EntityType)}>
-          <TabsList className="grid grid-cols-6 w-full">
+          <TabsList className="grid grid-cols-7 w-full">
             {(Object.keys(ENTITY_LABELS) as EntityType[]).map((t) => {
               const counts = summary?.[t];
               const pending = counts?.PENDING ?? 0;
               return (
-                <TabsTrigger key={t} value={t} className="relative">
+                <TabsTrigger key={t} value={t} className="relative text-xs">
                   {ENTITY_LABELS[t]}
                   {pending > 0 && (
-                    <Badge className="ml-2 bg-amber-500 hover:bg-amber-600 text-white">{pending}</Badge>
+                    <Badge className="ml-1 bg-amber-500 hover:bg-amber-600 text-white text-xs px-1 h-4">{pending}</Badge>
                   )}
                 </TabsTrigger>
               );
@@ -132,7 +135,7 @@ export default function QcPage() {
                   ) : (
                     <div className="space-y-2">
                       {items.map((item) => (
-                        <div key={item.id} className="flex items-start justify-between gap-4 p-4 border rounded-lg hover:bg-accent/30">
+                        <div key={`${item.id}-${(item as { id2?: number }).id2 ?? ""}`} className="flex items-start justify-between gap-4 p-4 border rounded-lg hover:bg-accent/30">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                               <h3 className="font-medium">{item.title}</h3>
@@ -146,12 +149,18 @@ export default function QcPage() {
                           </div>
                           <div className="flex flex-col gap-2 shrink-0">
                             {status !== "APPROVED" && (
-                              <Button size="sm" onClick={() => { setActionDialog({ open: true, mode: "approve", entityId: item.id, entityType: t }); setNote(""); }}>
+                              <Button size="sm" onClick={() => {
+                                setActionDialog({ open: true, mode: "approve", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
+                                setNote("");
+                              }}>
                                 <Check className="h-4 w-4 mr-1" />Duyệt
                               </Button>
                             )}
                             {status !== "REJECTED" && (
-                              <Button size="sm" variant="destructive" onClick={() => { setActionDialog({ open: true, mode: "reject", entityId: item.id, entityType: t }); setNote(""); }}>
+                              <Button size="sm" variant="destructive" onClick={() => {
+                                setActionDialog({ open: true, mode: "reject", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
+                                setNote("");
+                              }}>
                                 <X className="h-4 w-4 mr-1" />Từ chối
                               </Button>
                             )}
@@ -214,7 +223,7 @@ function HistoryDialog({ dialog, onClose }: { dialog: { open: boolean; entityTyp
               {history.map((h) => (
                 <div key={h.id} className="border rounded p-3 space-y-1">
                   <div className="flex items-center justify-between gap-2">
-                    <StatusBadge status={h.status} />
+                    <span className="text-xs font-medium">{h.action === "APPROVE" ? "✅ Phê duyệt" : "❌ Từ chối"}</span>
                     <span className="text-xs text-muted-foreground">{new Date(h.createdAt).toLocaleString("vi-VN")}</span>
                   </div>
                   {h.note && <p className="text-sm">{h.note}</p>}

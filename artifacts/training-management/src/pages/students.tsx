@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { AppLayout } from "@/components/layout";
+import { StatusBadge } from "@/components/status-badge";
+import { useAuth } from "@/contexts/auth";
 import {
   useListStudents,
   useCreateStudent,
@@ -12,7 +14,6 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
@@ -35,12 +36,15 @@ const emptyForm: StudentForm = {
 
 export default function StudentsPage() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState<StudentForm>(emptyForm);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  const canEdit = user?.role === "staff";
 
   const { data: students = [], isLoading } = useListStudents(search ? { search } : undefined);
   const { data: instructors = [] } = useListInstructors({ onlyApproved: "true" });
@@ -55,17 +59,11 @@ export default function StudentsPage() {
   const openEdit = (s: typeof students[0]) => {
     setEditId(s.id);
     setForm({
-      studentCode: s.studentCode,
-      fullName: s.fullName,
-      dateOfBirth: s.dateOfBirth ?? "",
-      idNumber: s.idNumber ?? "",
-      idIssueDate: s.idIssueDate ?? "",
-      idIssuePlace: s.idIssuePlace ?? "",
-      workplace: s.workplace ?? "",
-      address: s.address ?? "",
-      phone: s.phone ?? "",
-      email: s.email ?? "",
-      photoUrl: s.photoUrl ?? "",
+      studentCode: s.studentCode, fullName: s.fullName,
+      dateOfBirth: s.dateOfBirth ?? "", idNumber: s.idNumber ?? "",
+      idIssueDate: s.idIssueDate ?? "", idIssuePlace: s.idIssuePlace ?? "",
+      workplace: s.workplace ?? "", address: s.address ?? "",
+      phone: s.phone ?? "", email: s.email ?? "", photoUrl: s.photoUrl ?? "",
       instructorId: s.instructorId ? String(s.instructorId) : "",
       classId: s.classId ? String(s.classId) : "",
     });
@@ -78,17 +76,11 @@ export default function StudentsPage() {
       return;
     }
     const data = {
-      studentCode: form.studentCode,
-      fullName: form.fullName,
-      dateOfBirth: form.dateOfBirth || null,
-      idNumber: form.idNumber || null,
-      idIssueDate: form.idIssueDate || null,
-      idIssuePlace: form.idIssuePlace || null,
-      workplace: form.workplace || null,
-      address: form.address || null,
-      phone: form.phone || null,
-      email: form.email || null,
-      photoUrl: form.photoUrl || null,
+      studentCode: form.studentCode, fullName: form.fullName,
+      dateOfBirth: form.dateOfBirth || null, idNumber: form.idNumber || null,
+      idIssueDate: form.idIssueDate || null, idIssuePlace: form.idIssuePlace || null,
+      workplace: form.workplace || null, address: form.address || null,
+      phone: form.phone || null, email: form.email || null, photoUrl: form.photoUrl || null,
       instructorId: form.instructorId ? Number(form.instructorId) : null,
       classId: form.classId ? Number(form.classId) : null,
     };
@@ -98,7 +90,7 @@ export default function StudentsPage() {
         toast({ title: "Cập nhật thành công" });
       } else {
         await createMutation.mutateAsync({ data });
-        toast({ title: "Thêm học viên thành công" });
+        toast({ title: "Thêm học viên thành công — đang chờ QC duyệt" });
       }
       setOpen(false);
       invalidate();
@@ -130,9 +122,11 @@ export default function StudentsPage() {
             <h1 className="text-3xl font-bold tracking-tight text-foreground">Học viên</h1>
             <p className="text-muted-foreground mt-1">Quản lý danh sách học viên</p>
           </div>
-          <Button onClick={openCreate} className="gap-2">
-            <Plus className="h-4 w-4" /> Thêm học viên
-          </Button>
+          {canEdit && (
+            <Button onClick={openCreate} className="gap-2">
+              <Plus className="h-4 w-4" /> Thêm học viên
+            </Button>
+          )}
         </div>
 
         <div className="relative">
@@ -157,7 +151,7 @@ export default function StudentsPage() {
                   <th className="text-left px-4 py-3 font-medium text-muted-foreground">Ngày sinh</th>
                   <th className="text-left px-4 py-3 font-medium text-muted-foreground">Số điện thoại</th>
                   <th className="text-left px-4 py-3 font-medium text-muted-foreground">Lớp học</th>
-                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Giảng viên PT</th>
+                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">Trạng thái</th>
                   <th className="px-4 py-3"></th>
                 </tr>
               </thead>
@@ -178,16 +172,20 @@ export default function StudentsPage() {
                     <td className="px-4 py-3 text-muted-foreground">{s.dateOfBirth || "—"}</td>
                     <td className="px-4 py-3 text-muted-foreground">{s.phone || "—"}</td>
                     <td className="px-4 py-3 text-muted-foreground">{s.className || "—"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{s.instructorName || "—"}</td>
                     <td className="px-4 py-3">
-                      <div className="flex gap-1 justify-end">
-                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(s)}>
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => setDeleteId(s.id)}>
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
+                      <StatusBadge status={(s as { approvalStatus?: string }).approvalStatus} />
+                    </td>
+                    <td className="px-4 py-3">
+                      {canEdit && (
+                        <div className="flex gap-1 justify-end">
+                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(s)}>
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => setDeleteId(s.id)}>
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -196,100 +194,107 @@ export default function StudentsPage() {
           </div>
         )}
 
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{editId ? "Cập nhật học viên" : "Thêm học viên mới"}</DialogTitle>
-            </DialogHeader>
-            <div className="grid grid-cols-2 gap-4 py-2">
-              <div className="space-y-1.5">
-                <Label>Mã học viên <span className="text-destructive">*</span></Label>
-                <Input value={form.studentCode} onChange={f("studentCode")} placeholder="VD: HV-2024-001" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Họ và tên <span className="text-destructive">*</span></Label>
-                <Input value={form.fullName} onChange={f("fullName")} placeholder="Nguyễn Văn A" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Ngày tháng năm sinh</Label>
-                <Input type="date" value={form.dateOfBirth} onChange={f("dateOfBirth")} />
-              </div>
-              <div className="space-y-1.5">
-                <Label>CCCD</Label>
-                <Input value={form.idNumber} onChange={f("idNumber")} placeholder="Số CCCD" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Ngày cấp</Label>
-                <Input type="date" value={form.idIssueDate} onChange={f("idIssueDate")} />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Nơi cấp</Label>
-                <Input value={form.idIssuePlace} onChange={f("idIssuePlace")} placeholder="CA TP. Hà Nội" />
-              </div>
-              <div className="space-y-1.5 col-span-2">
-                <Label>Nơi công tác</Label>
-                <Input value={form.workplace} onChange={f("workplace")} placeholder="Tên công ty/đơn vị" />
-              </div>
-              <div className="space-y-1.5 col-span-2">
-                <Label>Nơi cư trú</Label>
-                <Input value={form.address} onChange={f("address")} placeholder="Địa chỉ thường trú" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Số điện thoại</Label>
-                <Input value={form.phone} onChange={f("phone")} placeholder="09xx xxx xxx" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Email</Label>
-                <Input type="email" value={form.email} onChange={f("email")} placeholder="email@example.com" />
-              </div>
-              <div className="space-y-1.5 col-span-2">
-                <Label>Ảnh thẻ (URL)</Label>
-                <Input value={form.photoUrl} onChange={f("photoUrl")} placeholder="https://..." />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Giảng viên phụ trách</Label>
-                <Select value={form.instructorId} onValueChange={(v) => setForm({ ...form, instructorId: v })}>
-                  <SelectTrigger><SelectValue placeholder="Chọn giảng viên" /></SelectTrigger>
-                  <SelectContent>
-                    {instructors.map((i) => (
-                      <SelectItem key={i.id} value={String(i.id)}>{i.fullName}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1.5">
-                <Label>Lớp học</Label>
-                <Select value={form.classId} onValueChange={(v) => setForm({ ...form, classId: v })}>
-                  <SelectTrigger><SelectValue placeholder="Chọn lớp học" /></SelectTrigger>
-                  <SelectContent>
-                    {classes.map((c) => (
-                      <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setOpen(false)}>Hủy</Button>
-              <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending}>
-                {editId ? "Cập nhật" : "Thêm học viên"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        {canEdit && (
+          <>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>{editId ? "Cập nhật học viên" : "Thêm học viên mới"}</DialogTitle>
+                </DialogHeader>
+                <div className="grid grid-cols-2 gap-4 py-2">
+                  <div className="space-y-1.5">
+                    <Label>Mã học viên <span className="text-destructive">*</span></Label>
+                    <Input value={form.studentCode} onChange={f("studentCode")} placeholder="VD: HV-2024-001" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Họ và tên <span className="text-destructive">*</span></Label>
+                    <Input value={form.fullName} onChange={f("fullName")} placeholder="Nguyễn Văn A" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Ngày tháng năm sinh</Label>
+                    <Input type="date" value={form.dateOfBirth} onChange={f("dateOfBirth")} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>CCCD</Label>
+                    <Input value={form.idNumber} onChange={f("idNumber")} placeholder="Số CCCD" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Ngày cấp</Label>
+                    <Input type="date" value={form.idIssueDate} onChange={f("idIssueDate")} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Nơi cấp</Label>
+                    <Input value={form.idIssuePlace} onChange={f("idIssuePlace")} placeholder="CA TP. Hà Nội" />
+                  </div>
+                  <div className="space-y-1.5 col-span-2">
+                    <Label>Nơi công tác</Label>
+                    <Input value={form.workplace} onChange={f("workplace")} placeholder="Tên công ty/đơn vị" />
+                  </div>
+                  <div className="space-y-1.5 col-span-2">
+                    <Label>Nơi cư trú</Label>
+                    <Input value={form.address} onChange={f("address")} placeholder="Địa chỉ thường trú" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Số điện thoại</Label>
+                    <Input value={form.phone} onChange={f("phone")} placeholder="09xx xxx xxx" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Email</Label>
+                    <Input type="email" value={form.email} onChange={f("email")} placeholder="email@example.com" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Giảng viên phụ trách</Label>
+                    <Select value={form.instructorId} onValueChange={(v) => setForm({ ...form, instructorId: v })}>
+                      <SelectTrigger><SelectValue placeholder="Chọn giảng viên" /></SelectTrigger>
+                      <SelectContent>
+                        {instructors.map((i) => (
+                          <SelectItem key={i.id} value={String(i.id)}>{i.fullName}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Lớp học</Label>
+                    <Select value={form.classId} onValueChange={(v) => setForm({ ...form, classId: v })}>
+                      <SelectTrigger><SelectValue placeholder="Chọn lớp học" /></SelectTrigger>
+                      <SelectContent>
+                        {classes.map((c) => (
+                          <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {!editId && (
+                    <div className="col-span-2">
+                      <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded p-2">
+                        Sau khi thêm, học viên sẽ ở trạng thái <strong>Chờ duyệt</strong> và cần QC phê duyệt.
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setOpen(false)}>Hủy</Button>
+                  <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending}>
+                    {editId ? "Cập nhật" : "Thêm học viên"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
-        <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
-              <AlertDialogDescription>Bạn có chắc muốn xóa học viên này?</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Hủy</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Xóa</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+            <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
+                  <AlertDialogDescription>Bạn có chắc muốn xóa học viên này?</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Hủy</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Xóa</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        )}
       </div>
     </AppLayout>
   );

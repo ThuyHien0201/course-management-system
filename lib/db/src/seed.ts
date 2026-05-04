@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
+import bcrypt from "bcryptjs";
 import * as schema from "./schema";
 
 const { Pool } = pg;
@@ -22,6 +23,35 @@ async function seed() {
   await db.delete(schema.classesTable);
   await db.delete(schema.coursesTable);
   await db.delete(schema.instructorsTable);
+  await db.delete(schema.usersTable);
+
+  // Users
+  const staffHash = await bcrypt.hash("demo123", 10);
+  const issuerHash = await bcrypt.hash("issuer123", 10);
+  const qcHash = await bcrypt.hash("qc123", 10);
+
+  await db.insert(schema.usersTable).values([
+    {
+      username: "nhanvien",
+      passwordHash: staffHash,
+      displayName: "Nguyễn Thị Nhân Viên",
+      role: "staff",
+    },
+    {
+      username: "capchungchi",
+      passwordHash: issuerHash,
+      displayName: "Trần Văn Cấp CC",
+      role: "issuer",
+    },
+    {
+      username: "qc",
+      passwordHash: qcHash,
+      displayName: "Lê Thị QC",
+      role: "qc",
+    },
+  ]);
+
+  console.log("Inserted 3 demo users");
 
   // Instructors
   const instructors = await db.insert(schema.instructorsTable).values([
@@ -145,7 +175,7 @@ async function seed() {
 
   console.log(`Inserted ${classes.length} classes`);
 
-  // Sessions for class 1 (ATLĐ-2025-01)
+  // Sessions
   await db.insert(schema.sessionsTable).values([
     {
       classId: classes[0].id,
@@ -188,20 +218,6 @@ async function seed() {
       approvedAt: new Date("2025-02-12"),
     },
     {
-      classId: classes[0].id,
-      sessionDate: "2025-02-12",
-      sessionPeriod: "Sáng",
-      lessonCount: 4,
-      content: "Quy trình báo cáo tai nạn lao động",
-      instructorId: instructors[1].id,
-      approvalStatus: "APPROVED",
-      approvedAt: new Date("2025-02-14"),
-    },
-  ]);
-
-  // Sessions for class 3 (PCCC-2025-01)
-  await db.insert(schema.sessionsTable).values([
-    {
       classId: classes[2].id,
       sessionDate: "2025-02-24",
       sessionPeriod: "Sáng",
@@ -243,7 +259,7 @@ async function seed() {
 
   console.log("Inserted sessions");
 
-  // Students for class 1 (ATLĐ-2025-01)
+  // Students class 1
   const studentsClass1 = await db.insert(schema.studentsTable).values([
     {
       studentCode: "HV001",
@@ -337,7 +353,7 @@ async function seed() {
     },
   ]).returning();
 
-  // Students for class 2 (ATLĐ-2025-02)
+  // Students class 2
   const studentsClass2 = await db.insert(schema.studentsTable).values([
     {
       studentCode: "HV006",
@@ -384,7 +400,7 @@ async function seed() {
     },
   ]).returning();
 
-  // Students for class 3 (PCCC-2025-01)
+  // Students class 3
   const studentsClass3 = await db.insert(schema.studentsTable).values([
     {
       studentCode: "HV009",
@@ -456,9 +472,9 @@ async function seed() {
     },
   ]).returning();
 
-  console.log(`Inserted students`);
+  console.log("Inserted students");
 
-  // Certificates for completed students in class 1 and class 3
+  // Certificates for approved students
   const certStudents = [
     { student: studentsClass1[0], classId: classes[0].id },
     { student: studentsClass1[1], classId: classes[0].id },
@@ -473,12 +489,14 @@ async function seed() {
   for (const { student, classId } of certStudents) {
     await db.insert(schema.certificatesTable).values({
       studentId: student.id,
-      classId: classId,
+      classId,
       issueDate: "2025-03-01",
       expiryDate: "2027-03-01",
       instructorId: instructors[0].id,
       printLocation: "Trung tâm Đào tạo An toàn Lao động Quốc gia, 12 Viên, Hà Nội",
       locationLink: "https://maps.google.com",
+      approvalStatus: "APPROVED",
+      approvedAt: new Date("2025-03-10"),
     });
   }
 

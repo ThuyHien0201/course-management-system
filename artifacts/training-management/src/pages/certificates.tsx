@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { AppLayout } from "@/components/layout";
+import { StatusBadge } from "@/components/status-badge";
+import { useAuth } from "@/contexts/auth";
 import {
   useListCertificates,
   useGetCertificateStudentsByClass,
@@ -16,25 +18,25 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Award, ChevronLeft, Calendar, Users, Plus, Pencil, Check, Search } from "lucide-react";
+import { Award, ChevronLeft, Calendar, Users, Plus, Pencil, Check, Search, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type CertForm = {
-  issueDate: string;
-  expiryDate: string;
-  instructorId: string;
-  printLocation: string;
-  locationLink: string;
+  issueDate: string; expiryDate: string; instructorId: string;
+  printLocation: string; locationLink: string;
 };
 const emptyCertForm: CertForm = { issueDate: "", expiryDate: "", instructorId: "", printLocation: "", locationLink: "" };
 
 export default function CertificatesPage() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const qc = useQueryClient();
   const [selectedClass, setSelectedClass] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const [certModal, setCertModal] = useState<{ studentId: number; isEdit: boolean } | null>(null);
   const [certForm, setCertForm] = useState<CertForm>(emptyCertForm);
+
+  const canIssue = user?.role === "issuer";
 
   const { data: classes = [], isLoading } = useListCertificates();
   const { data: instructors = [] } = useListInstructors({ onlyApproved: "true" });
@@ -66,11 +68,9 @@ export default function CertificatesPage() {
     const s = students.find((s) => s.studentId === studentId);
     if (!s) return;
     setCertForm({
-      issueDate: s.issueDate ?? "",
-      expiryDate: s.expiryDate ?? "",
+      issueDate: s.issueDate ?? "", expiryDate: s.expiryDate ?? "",
       instructorId: s.instructorId ? String(s.instructorId) : "",
-      printLocation: s.printLocation ?? "",
-      locationLink: s.locationLink ?? "",
+      printLocation: s.printLocation ?? "", locationLink: s.locationLink ?? "",
     });
     setCertModal({ studentId, isEdit: true });
   };
@@ -87,15 +87,11 @@ export default function CertificatesPage() {
     };
     try {
       if (certModal.isEdit) {
-        await updateMutation.mutateAsync({
-          classId: selectedClass,
-          studentId: certModal.studentId,
-          data,
-        });
+        await updateMutation.mutateAsync({ classId: selectedClass, studentId: certModal.studentId, data });
         toast({ title: "Cập nhật chứng chỉ thành công" });
       } else {
         await issueMutation.mutateAsync({ classId: selectedClass, data });
-        toast({ title: "Cấp chứng chỉ thành công" });
+        toast({ title: "Cấp chứng chỉ thành công — đang chờ QC duyệt" });
       }
       setCertModal(null);
       invalidateStudents();
@@ -108,9 +104,17 @@ export default function CertificatesPage() {
     return (
       <AppLayout>
         <div className="p-8 max-w-7xl mx-auto space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">Cấp chứng chỉ</h1>
-            <p className="text-muted-foreground mt-1">Chọn lớp học để quản lý cấp chứng chỉ</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">Cấp chứng chỉ</h1>
+              <p className="text-muted-foreground mt-1">Chọn lớp học để quản lý cấp chứng chỉ</p>
+            </div>
+            {!canIssue && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted px-3 py-2 rounded-lg">
+                <Lock className="h-4 w-4" />
+                Chỉ xem (không thể cấp)
+              </div>
+            )}
           </div>
           {isLoading ? (
             <div className="text-center py-12 text-muted-foreground">Đang tải...</div>
@@ -172,12 +176,7 @@ export default function CertificatesPage() {
 
         <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Tìm học viên..."
-            className="pl-9"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <Input placeholder="Tìm học viên..." className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
 
         <div className="overflow-x-auto rounded-lg border shadow-sm bg-card">
@@ -190,15 +189,16 @@ export default function CertificatesPage() {
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Tên khóa học</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Ngày cấp</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Ngày hết HH</th>
-                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Trạng thái</th>
+                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Trạng thái CC</th>
+                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Duyệt QC</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y">
               {studentsLoading ? (
-                <tr><td colSpan={8} className="text-center py-10 text-muted-foreground">Đang tải...</td></tr>
+                <tr><td colSpan={9} className="text-center py-10 text-muted-foreground">Đang tải...</td></tr>
               ) : students.length === 0 ? (
-                <tr><td colSpan={8} className="text-center py-10 text-muted-foreground">Chưa có học viên trong lớp này</td></tr>
+                <tr><td colSpan={9} className="text-center py-10 text-muted-foreground">Chưa có học viên trong lớp này</td></tr>
               ) : students.map((s) => (
                 <tr key={s.studentId} className="hover:bg-muted/20 transition-colors">
                   <td className="px-4 py-3">
@@ -220,14 +220,21 @@ export default function CertificatesPage() {
                   </td>
                   <td className="px-4 py-3">
                     {s.hasCertificate ? (
-                      <Button size="sm" variant="ghost" className="h-7 gap-1 text-xs" onClick={() => openEdit(s.studentId)}>
-                        <Pencil className="h-3 w-3" /> Sửa
-                      </Button>
-                    ) : (
-                      <Button size="sm" className="h-7 gap-1 text-xs" onClick={() => openIssue(s.studentId)}>
-                        <Plus className="h-3 w-3" /> Cấp CC
-                      </Button>
-                    )}
+                      <StatusBadge status={(s as { approvalStatus?: string }).approvalStatus} />
+                    ) : <span className="text-xs text-muted-foreground">—</span>}
+                  </td>
+                  <td className="px-4 py-3">
+                    {canIssue ? (
+                      s.hasCertificate ? (
+                        <Button size="sm" variant="ghost" className="h-7 gap-1 text-xs" onClick={() => openEdit(s.studentId)}>
+                          <Pencil className="h-3 w-3" /> Sửa
+                        </Button>
+                      ) : (
+                        <Button size="sm" className="h-7 gap-1 text-xs" onClick={() => openIssue(s.studentId)}>
+                          <Plus className="h-3 w-3" /> Cấp CC
+                        </Button>
+                      )
+                    ) : null}
                   </td>
                 </tr>
               ))}
@@ -235,75 +242,55 @@ export default function CertificatesPage() {
           </table>
         </div>
 
-        <Dialog open={!!certModal} onOpenChange={(o) => !o && setCertModal(null)}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>{certModal?.isEdit ? "Cập nhật chứng chỉ" : "Cấp chứng chỉ"}</DialogTitle>
-              <DialogDescription>
-                {certModal?.isEdit ? "Chỉnh sửa thông tin chứng chỉ đã cấp" : "Điền thông tin để cấp chứng chỉ cho học viên"}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-2">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label>Ngày cấp</Label>
-                  <Input
-                    type="date"
-                    value={certForm.issueDate}
-                    onChange={(e) => setCertForm({ ...certForm, issueDate: e.target.value })}
-                  />
+        {canIssue && (
+          <Dialog open={!!certModal} onOpenChange={(o) => !o && setCertModal(null)}>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>{certModal?.isEdit ? "Cập nhật chứng chỉ" : "Cấp chứng chỉ"}</DialogTitle>
+                <DialogDescription>
+                  {certModal?.isEdit ? "Chỉnh sửa thông tin chứng chỉ đã cấp" : "Điền thông tin để cấp chứng chỉ cho học viên. Sau khi cấp sẽ cần QC phê duyệt."}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-2">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label>Ngày cấp</Label>
+                    <Input type="date" value={certForm.issueDate} onChange={(e) => setCertForm({ ...certForm, issueDate: e.target.value })} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Ngày hết hiệu lực</Label>
+                    <Input type="date" value={certForm.expiryDate} onChange={(e) => setCertForm({ ...certForm, expiryDate: e.target.value })} />
+                  </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Ngày hết hiệu lực</Label>
-                  <Input
-                    type="date"
-                    value={certForm.expiryDate}
-                    onChange={(e) => setCertForm({ ...certForm, expiryDate: e.target.value })}
-                  />
+                  <Label>Giảng viên ký chứng chỉ</Label>
+                  <Select value={certForm.instructorId} onValueChange={(v) => setCertForm({ ...certForm, instructorId: v })}>
+                    <SelectTrigger><SelectValue placeholder="Chọn giảng viên" /></SelectTrigger>
+                    <SelectContent>
+                      {instructors.map((i) => (
+                        <SelectItem key={i.id} value={String(i.id)}>{i.fullName}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Nơi in chứng chỉ</Label>
+                  <Input value={certForm.printLocation} onChange={(e) => setCertForm({ ...certForm, printLocation: e.target.value })} placeholder="Địa điểm in..." />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Link định vị</Label>
+                  <Input value={certForm.locationLink} onChange={(e) => setCertForm({ ...certForm, locationLink: e.target.value })} placeholder="https://maps.google.com/..." />
                 </div>
               </div>
-              <div className="space-y-1.5">
-                <Label>Giảng viên ký chứng chỉ</Label>
-                <Select
-                  value={certForm.instructorId}
-                  onValueChange={(v) => setCertForm({ ...certForm, instructorId: v })}
-                >
-                  <SelectTrigger><SelectValue placeholder="Chọn giảng viên" /></SelectTrigger>
-                  <SelectContent>
-                    {instructors.map((i) => (
-                      <SelectItem key={i.id} value={String(i.id)}>{i.fullName}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1.5">
-                <Label>Nơi in chứng chỉ</Label>
-                <Input
-                  value={certForm.printLocation}
-                  onChange={(e) => setCertForm({ ...certForm, printLocation: e.target.value })}
-                  placeholder="Địa điểm in..."
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Link định vị</Label>
-                <Input
-                  value={certForm.locationLink}
-                  onChange={(e) => setCertForm({ ...certForm, locationLink: e.target.value })}
-                  placeholder="https://maps.google.com/..."
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setCertModal(null)}>Hủy</Button>
-              <Button
-                onClick={handleSubmit}
-                disabled={issueMutation.isPending || updateMutation.isPending}
-              >
-                {certModal?.isEdit ? "Cập nhật" : "Cấp chứng chỉ"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setCertModal(null)}>Hủy</Button>
+                <Button onClick={handleSubmit} disabled={issueMutation.isPending || updateMutation.isPending}>
+                  {certModal?.isEdit ? "Cập nhật" : "Cấp chứng chỉ"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     </AppLayout>
   );
