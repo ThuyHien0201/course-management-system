@@ -9,8 +9,7 @@ import { Award, Eye, EyeOff, Lock, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const DEMO_ACCOUNTS = [
-  { username: "nhanvien", password: "demo123", role: "staff", label: "Nhân viên", color: "bg-blue-100 text-blue-700 border-blue-200" },
-  { username: "capchungchi", password: "issuer123", role: "issuer", label: "Cấp chứng chỉ", color: "bg-amber-100 text-amber-700 border-amber-200" },
+  { username: "admin", password: "admin123", role: "admin", label: "Quản trị viên", color: "bg-purple-100 text-purple-700 border-purple-200" },
   { username: "qc", password: "qc123", role: "qc", label: "QC", color: "bg-green-100 text-green-700 border-green-200" },
 ];
 
@@ -120,9 +119,8 @@ export default function LoginPage() {
                 <div>
                   <p className="text-sm font-medium">{acc.username} / {acc.password}</p>
                   <p className="text-xs text-muted-foreground">
-                    {acc.role === "staff" ? "Tạo, chỉnh sửa và xem chứng chỉ" :
-                     acc.role === "issuer" ? "Cấp chứng chỉ chính thức" :
-                     "Phê duyệt QC"}
+                    {acc.role === "admin" ? "Truy cập đầy đủ tất cả module" :
+                     "Chỉ truy cập module Quản lý chất lượng"}
                   </p>
                 </div>
                 <Badge className={acc.color}>{acc.label}</Badge>

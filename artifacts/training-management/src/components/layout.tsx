@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth";
 
 const ROLE_LABELS: Record<string, { label: string; color: string }> = {
+  admin: { label: "Quản trị viên", color: "bg-purple-100 text-purple-700 border-purple-200" },
   staff: { label: "Nhân viên", color: "bg-blue-100 text-blue-700 border-blue-200" },
   issuer: { label: "Cấp chứng chỉ", color: "bg-amber-100 text-amber-700 border-amber-200" },
   qc: { label: "QC", color: "bg-green-100 text-green-700 border-green-200" },
@@ -38,14 +39,14 @@ const ROLE_LABELS: Record<string, { label: string; color: string }> = {
 type NavItem = { title: string; href: string; icon: React.ElementType; roles?: string[] };
 
 const navItems: NavItem[] = [
-  { title: "Tổng quan", href: "/", icon: LayoutDashboard },
-  { title: "Khóa học", href: "/khoa-hoc", icon: BookOpen, roles: ["staff", "qc"] },
-  { title: "Lớp học", href: "/lop-hoc", icon: Library, roles: ["staff", "qc"] },
-  { title: "Học viên", href: "/hoc-vien", icon: Users, roles: ["staff", "qc"] },
-  { title: "Giảng viên", href: "/giang-vien", icon: GraduationCap, roles: ["staff", "qc"] },
-  { title: "Cấp chứng chỉ", href: "/chung-chi", icon: Award },
-  { title: "Quản lý chất lượng", href: "/qc", icon: ShieldCheck, roles: ["qc"] },
-  { title: "Quản lý tài khoản", href: "/tai-khoan", icon: UserCog, roles: ["qc"] },
+  { title: "Tổng quan", href: "/", icon: LayoutDashboard, roles: ["admin", "staff", "issuer"] },
+  { title: "Khóa học", href: "/khoa-hoc", icon: BookOpen, roles: ["admin", "staff"] },
+  { title: "Lớp học", href: "/lop-hoc", icon: Library, roles: ["admin", "staff"] },
+  { title: "Học viên", href: "/hoc-vien", icon: Users, roles: ["admin", "staff"] },
+  { title: "Giảng viên", href: "/giang-vien", icon: GraduationCap, roles: ["admin", "staff"] },
+  { title: "Cấp chứng chỉ", href: "/chung-chi", icon: Award, roles: ["admin", "issuer"] },
+  { title: "Quản lý chất lượng", href: "/qc", icon: ShieldCheck, roles: ["admin", "qc"] },
+  { title: "Quản lý tài khoản", href: "/tai-khoan", icon: UserCog, roles: ["admin", "qc"] },
 ];
 
 export function AppLayout({ children }: { children: ReactNode }) {

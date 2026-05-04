@@ -44,7 +44,7 @@ export default function StudentsPage() {
   const [form, setForm] = useState<StudentForm>(emptyForm);
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
-  const canEdit = user?.role === "staff";
+  const canEdit = user?.role === "staff" || user?.role === "admin";
 
   const { data: students = [], isLoading } = useListStudents(search ? { search } : undefined);
   const { data: instructors = [] } = useListInstructors({ onlyApproved: "true" });

@@ -34,7 +34,7 @@ export default function CoursesPage() {
   const [form, setForm] = useState<CourseForm>(emptyForm);
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
-  const canEdit = user?.role === "staff";
+  const canEdit = user?.role === "staff" || user?.role === "admin";
 
   const { data: courses = [], isLoading } = useListCourses(search ? { search } : undefined);
   const createMutation = useCreateCourse();

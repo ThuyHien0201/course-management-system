@@ -36,7 +36,7 @@ export default function CertificatesPage() {
   const [certModal, setCertModal] = useState<{ studentId: number; isEdit: boolean } | null>(null);
   const [certForm, setCertForm] = useState<CertForm>(emptyCertForm);
 
-  const canIssue = user?.role === "issuer";
+  const canIssue = user?.role === "issuer" || user?.role === "admin";
 
   const { data: classes = [], isLoading } = useListCertificates();
   const { data: instructors = [] } = useListInstructors({ onlyApproved: "true" });

@@ -35,6 +35,16 @@ function Router() {
     );
   }
 
+  if (user.role === "qc") {
+    return (
+      <Switch>
+        <Route path="/qc" component={QcPage} />
+        <Route path="/tai-khoan" component={AccountsPage} />
+        <Route path="*"><Redirect to="/qc" /></Route>
+      </Switch>
+    );
+  }
+
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
@@ -44,10 +54,10 @@ function Router() {
       <Route path="/giang-vien" component={InstructorsPage} />
       <Route path="/chung-chi" component={CertificatesPage} />
       <Route path="/qc">
-        {user.role === "qc" ? <QcPage /> : <Redirect to="/" />}
+        {user.role === "admin" ? <QcPage /> : <Redirect to="/" />}
       </Route>
       <Route path="/tai-khoan">
-        {user.role === "qc" ? <AccountsPage /> : <Redirect to="/" />}
+        {user.role === "admin" ? <AccountsPage /> : <Redirect to="/" />}
       </Route>
       <Route component={NotFound} />
     </Switch>

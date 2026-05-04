@@ -71,7 +71,7 @@ export default function ClassesPage() {
   const [studentRows, setStudentRows] = useState<StudentRow[]>([]);
   const [studentsDirty, setStudentsDirty] = useState(false);
 
-  const canEdit = user?.role === "staff";
+  const canEdit = user?.role === "staff" || user?.role === "admin";
 
   const { data: classes = [], isLoading } = useListClasses(search ? { search } : undefined);
   const { data: courses = [] } = useListCourses({ onlyApproved: "true" });

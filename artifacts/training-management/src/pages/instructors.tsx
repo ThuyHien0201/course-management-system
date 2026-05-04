@@ -37,7 +37,7 @@ export default function InstructorsPage() {
   const [form, setForm] = useState<InstructorForm>(emptyForm);
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
-  const canEdit = user?.role === "staff";
+  const canEdit = user?.role === "staff" || user?.role === "admin";
 
   const { data: instructors = [], isLoading } = useListInstructors(search ? { search } : undefined);
   const createMutation = useCreateInstructor();
