@@ -11,11 +11,13 @@ import storageRouter from "./storage";
 import qcRouter from "./qc";
 import authRouter from "./auth";
 import usersRouter from "./users";
+import companyRouter from "./company";
 
 const router: IRouter = Router();
 
 router.use("/auth", authRouter);
 router.use("/users", usersRouter);
+router.use("/company", companyRouter);
 router.use(healthRouter);
 router.use("/courses", coursesRouter);
 router.use("/classes", classesRouter);

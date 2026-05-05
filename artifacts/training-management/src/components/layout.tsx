@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   LogOut,
   UserCog,
+  Building2,
 } from "lucide-react";
 import {
   Sidebar,
@@ -46,6 +47,7 @@ const navItems: NavItem[] = [
   { title: "Giảng viên", href: "/giang-vien", icon: GraduationCap, roles: ["admin", "staff"] },
   { title: "Cấp chứng chỉ", href: "/chung-chi", icon: Award, roles: ["admin", "issuer"] },
   { title: "Quản lý chất lượng", href: "/qc", icon: ShieldCheck, roles: ["admin", "qc"] },
+  { title: "Thông tin doanh nghiệp", href: "/doanh-nghiep", icon: Building2, roles: ["admin"] },
   { title: "Quản lý tài khoản", href: "/tai-khoan", icon: UserCog, roles: ["admin", "qc"] },
 ];
 

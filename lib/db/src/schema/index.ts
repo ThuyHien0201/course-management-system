@@ -6,3 +6,4 @@ export * from "./instructors";
 export * from "./certificates";
 export * from "./approvals";
 export * from "./users";
+export * from "./company";

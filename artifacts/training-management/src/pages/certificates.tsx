@@ -18,8 +18,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Award, ChevronLeft, Calendar, Users, Plus, Pencil, Check, Search, Lock } from "lucide-react";
+import { Award, ChevronLeft, Calendar, Users, Plus, Pencil, Check, Search, Lock, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { CertificatePreview } from "@/components/certificate-preview";
 
 type CertForm = {
   issueDate: string; expiryDate: string; instructorId: string;
@@ -35,6 +36,7 @@ export default function CertificatesPage() {
   const [search, setSearch] = useState("");
   const [certModal, setCertModal] = useState<{ studentId: number; isEdit: boolean } | null>(null);
   const [certForm, setCertForm] = useState<CertForm>(emptyCertForm);
+  const [previewStudentId, setPreviewStudentId] = useState<number | null>(null);
 
   const canIssue = user?.role === "issuer" || user?.role === "admin";
 
@@ -189,6 +191,7 @@ export default function CertificatesPage() {
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Tên khóa học</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Ngày cấp</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Ngày hết HH</th>
+                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Chứng chỉ</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Trạng thái CC</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">Duyệt QC</th>
                 <th className="px-4 py-3"></th>
@@ -196,9 +199,9 @@ export default function CertificatesPage() {
             </thead>
             <tbody className="divide-y">
               {studentsLoading ? (
-                <tr><td colSpan={9} className="text-center py-10 text-muted-foreground">Đang tải...</td></tr>
+                <tr><td colSpan={10} className="text-center py-10 text-muted-foreground">Đang tải...</td></tr>
               ) : students.length === 0 ? (
-                <tr><td colSpan={9} className="text-center py-10 text-muted-foreground">Chưa có học viên trong lớp này</td></tr>
+                <tr><td colSpan={10} className="text-center py-10 text-muted-foreground">Chưa có học viên trong lớp này</td></tr>
               ) : students.map((s) => (
                 <tr key={s.studentId} className="hover:bg-muted/20 transition-colors">
                   <td className="px-4 py-3">
@@ -209,6 +212,20 @@ export default function CertificatesPage() {
                   <td className="px-4 py-3 text-muted-foreground text-xs">{s.courseName}</td>
                   <td className="px-4 py-3 text-muted-foreground">{s.issueDate || "—"}</td>
                   <td className="px-4 py-3 text-muted-foreground">{s.expiryDate || "—"}</td>
+                  <td className="px-4 py-3">
+                    {s.hasCertificate ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 gap-1 text-xs border-[#0047AB]/40 text-[#0047AB] hover:bg-[#0047AB]/10"
+                        onClick={() => setPreviewStudentId(s.studentId)}
+                      >
+                        <Eye className="h-3 w-3" /> Demo
+                      </Button>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     {s.hasCertificate ? (
                       <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 gap-1">
@@ -291,6 +308,18 @@ export default function CertificatesPage() {
             </DialogContent>
           </Dialog>
         )}
+
+        <CertificatePreview
+          open={!!previewStudentId}
+          onClose={() => setPreviewStudentId(null)}
+          student={previewStudentId ? (students.find((s) => s.studentId === previewStudentId) ?? null) as Parameters<typeof CertificatePreview>[0]["student"] : null}
+          classData={selectedClassData ? {
+            name: selectedClassData.name,
+            courseName: selectedClassData.courseName,
+            startDate: selectedClassData.startDate,
+            endDate: selectedClassData.endDate,
+          } : null}
+        />
       </div>
     </AppLayout>
   );

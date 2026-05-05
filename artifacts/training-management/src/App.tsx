@@ -13,6 +13,7 @@ import CertificatesPage from "@/pages/certificates";
 import QcPage from "@/pages/qc";
 import LoginPage from "@/pages/login";
 import AccountsPage from "@/pages/accounts";
+import CompanyPage from "@/pages/company";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,9 @@ function Router() {
       </Route>
       <Route path="/tai-khoan">
         {user.role === "admin" ? <AccountsPage /> : <Redirect to="/" />}
+      </Route>
+      <Route path="/doanh-nghiep">
+        {user.role === "admin" ? <CompanyPage /> : <Redirect to="/" />}
       </Route>
       <Route component={NotFound} />
     </Switch>
