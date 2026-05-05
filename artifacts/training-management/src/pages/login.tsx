@@ -3,48 +3,8 @@ import { useAuth } from "@/contexts/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Award, Eye, EyeOff, Lock, User, Crown, Users, ShieldCheck } from "lucide-react";
+import { Award, Eye, EyeOff, Lock, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-const DEMO_ACCOUNTS = [
-  {
-    username: "admin",
-    password: "admin123",
-    label: "Quản trị viên",
-    desc: "Toàn quyền tất cả module",
-    color: "bg-purple-100 text-purple-700 border-purple-200",
-    iconColor: "text-purple-600",
-    Icon: Crown,
-  },
-  {
-    username: "staff",
-    password: "staff123",
-    label: "Nhân viên",
-    desc: "Quản lý khóa học, lớp, học viên, giảng viên, xem chứng chỉ",
-    color: "bg-blue-100 text-blue-700 border-blue-200",
-    iconColor: "text-blue-600",
-    Icon: Users,
-  },
-  {
-    username: "issuer",
-    password: "issuer123",
-    label: "Cấp chứng chỉ",
-    desc: "Cấp & quản lý chứng chỉ (sau khi QC duyệt kết quả)",
-    color: "bg-amber-100 text-amber-700 border-amber-200",
-    iconColor: "text-amber-600",
-    Icon: Award,
-  },
-  {
-    username: "qc",
-    password: "qc123",
-    label: "Kiểm soát chất lượng",
-    desc: "Phê duyệt toàn bộ nội dung trước khi sử dụng",
-    color: "bg-green-100 text-green-700 border-green-200",
-    iconColor: "text-green-600",
-    Icon: ShieldCheck,
-  },
-];
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -53,7 +13,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeDemo, setActiveDemo] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,12 +32,6 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const fillDemo = (acc: typeof DEMO_ACCOUNTS[0]) => {
-    setUsername(acc.username);
-    setPassword(acc.password);
-    setActiveDemo(acc.username);
   };
 
   return (
@@ -144,7 +97,7 @@ export default function LoginPage() {
                       className="pl-9 h-10 border-slate-200 focus:border-[#0047AB] focus:ring-[#0047AB]/20"
                       placeholder="Nhập tên đăng nhập"
                       value={username}
-                      onChange={(e) => { setUsername(e.target.value); setActiveDemo(null); }}
+                      onChange={(e) => setUsername(e.target.value)}
                       autoComplete="username"
                     />
                   </div>
@@ -158,7 +111,7 @@ export default function LoginPage() {
                       type={showPass ? "text" : "password"}
                       placeholder="Nhập mật khẩu"
                       value={password}
-                      onChange={(e) => { setPassword(e.target.value); setActiveDemo(null); }}
+                      onChange={(e) => setPassword(e.target.value)}
                       autoComplete="current-password"
                     />
                     <button
@@ -178,45 +131,6 @@ export default function LoginPage() {
                   {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
                 </Button>
               </form>
-            </div>
-          </div>
-
-          {/* Demo accounts */}
-          <div className="space-y-2">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider text-center">
-              Tài khoản demo — nhấn để điền tự động
-            </p>
-            <div className="grid grid-cols-1 gap-2">
-              {DEMO_ACCOUNTS.map((acc) => {
-                const Icon = acc.Icon;
-                const isActive = activeDemo === acc.username;
-                return (
-                  <button
-                    key={acc.username}
-                    onClick={() => fillDemo(acc)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${
-                      isActive
-                        ? "border-[#0047AB] bg-[#0047AB]/5 ring-1 ring-[#0047AB]/20"
-                        : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
-                    }`}
-                  >
-                    <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 ${
-                      isActive ? "bg-[#0047AB]/10" : "bg-slate-100"
-                    }`}>
-                      <Icon className={`h-4 w-4 ${isActive ? "text-[#0047AB]" : acc.iconColor}`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-semibold text-slate-700 font-mono">{acc.username}</span>
-                        <span className="text-xs text-slate-400">/</span>
-                        <span className="text-xs text-slate-500 font-mono">{acc.password}</span>
-                      </div>
-                      <p className="text-[11px] text-slate-400 mt-0.5 leading-tight truncate">{acc.desc}</p>
-                    </div>
-                    <Badge className={`text-[10px] shrink-0 ${acc.color}`}>{acc.label}</Badge>
-                  </button>
-                );
-              })}
             </div>
           </div>
         </div>
