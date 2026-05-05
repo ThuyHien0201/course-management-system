@@ -4,7 +4,7 @@ import type { Request, Response, NextFunction } from "express";
 const JWT_SECRET = process.env.JWT_SECRET || "training-mgmt-demo-secret-2025";
 const JWT_EXPIRES = "8h";
 
-export type UserRole = "staff" | "issuer" | "qc";
+export type UserRole = "admin" | "staff" | "issuer" | "qc";
 
 export interface JwtPayload {
   userId: number;

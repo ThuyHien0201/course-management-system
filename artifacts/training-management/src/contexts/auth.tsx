@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from "react";
+import { setAuthTokenGetter } from "@workspace/api-client-react";
 
-export type UserRole = "staff" | "issuer" | "qc";
+export type UserRole = "admin" | "staff" | "issuer" | "qc";
 
 export interface AuthUser {
   id: number;
@@ -39,6 +40,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
     setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    setAuthTokenGetter(() => localStorage.getItem("auth_token"));
+    return () => setAuthTokenGetter(null);
   }, []);
 
   const login = useCallback(async (username: string, password: string) => {

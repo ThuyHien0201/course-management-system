@@ -10,10 +10,12 @@ import dashboardRouter from "./dashboard";
 import storageRouter from "./storage";
 import qcRouter from "./qc";
 import authRouter from "./auth";
+import usersRouter from "./users";
 
 const router: IRouter = Router();
 
 router.use("/auth", authRouter);
+router.use("/users", usersRouter);
 router.use(healthRouter);
 router.use("/courses", coursesRouter);
 router.use("/classes", classesRouter);
