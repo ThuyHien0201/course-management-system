@@ -54,19 +54,6 @@ export default function LoginPage() {
               Quản lý toàn diện khóa học, học viên, giảng viên và cấp chứng chỉ chuyên nghiệp
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-3 max-w-[280px]">
-            {[
-              { label: "Khóa học", value: "7" },
-              { label: "Học viên", value: "17" },
-              { label: "Chứng chỉ", value: "16" },
-              { label: "Giảng viên", value: "5" },
-            ].map((stat) => (
-              <div key={stat.label} className="bg-white/10 rounded-xl p-3 text-center backdrop-blur">
-                <p className="text-white font-bold text-xl">{stat.value}</p>
-                <p className="text-blue-200 text-xs mt-0.5">{stat.label}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 

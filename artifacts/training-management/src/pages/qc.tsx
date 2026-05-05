@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   useListQcItems,
   useGetQcSummary,
@@ -7,7 +7,6 @@ import {
   useGetQcHistory,
   getListQcItemsQueryKey,
   getGetQcSummaryQueryKey,
-  getGetQcHistoryQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppLayout } from "@/components/layout";
@@ -19,8 +18,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Check, X, History as HistoryIcon, ShieldCheck } from "lucide-react";
+import { Check, X, History as HistoryIcon, ShieldCheck, Calendar } from "lucide-react";
 
 type EntityType = "course" | "class" | "student" | "instructor" | "session" | "result" | "certificate";
 type Status = "PENDING" | "APPROVED" | "REJECTED";
@@ -44,6 +44,8 @@ function StatusBadge({ status }: { status: string }) {
 export default function QcPage() {
   const [entityType, setEntityType] = useState<EntityType>("course");
   const [status, setStatus] = useState<Status>("PENDING");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [actionDialog, setActionDialog] = useState<{ open: boolean; mode: "approve" | "reject"; entityId?: number; entityId2?: number; entityType?: EntityType }>({ open: false, mode: "approve" });
   const [historyDialog, setHistoryDialog] = useState<{ open: boolean; entityType?: EntityType; entityId?: number; title?: string }>({ open: false });
   const [note, setNote] = useState("");
@@ -52,9 +54,21 @@ export default function QcPage() {
   const { toast } = useToast();
 
   const { data: summary } = useGetQcSummary();
-  const { data: items = [], isLoading } = useListQcItems({ entityType, status });
+  const { data: rawItems = [], isLoading } = useListQcItems({ entityType, status });
   const approveM = useApproveQc();
   const rejectM = useRejectQc();
+
+  const items = useMemo(() => {
+    if (!fromDate && !toDate) return rawItems;
+    return rawItems.filter((item) => {
+      const d = (item as { createdAt?: string }).createdAt;
+      if (!d) return true;
+      const date = d.slice(0, 10);
+      if (fromDate && date < fromDate) return false;
+      if (toDate && date > toDate) return false;
+      return true;
+    });
+  }, [rawItems, fromDate, toDate]);
 
   const refresh = () => {
     qc.invalidateQueries({ queryKey: getListQcItemsQueryKey({ entityType, status }) });
@@ -88,11 +102,41 @@ export default function QcPage() {
   return (
     <AppLayout>
       <div className="container max-w-7xl mx-auto p-6 space-y-6">
-        <div className="flex items-center gap-3">
-          <ShieldCheck className="h-8 w-8 text-primary" />
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Quản lý chất lượng</h1>
-            <p className="text-sm text-muted-foreground">Phê duyệt nội dung trước khi đưa vào sử dụng</p>
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-3">
+            <ShieldCheck className="h-8 w-8 text-primary" />
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">Quản lý chất lượng</h1>
+              <p className="text-sm text-muted-foreground">Phê duyệt nội dung trước khi đưa vào sử dụng</p>
+            </div>
+          </div>
+
+          {/* Time filter */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm text-muted-foreground">Từ</span>
+              <Input
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+                className="h-8 text-sm w-[140px]"
+              />
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm text-muted-foreground">đến</span>
+              <Input
+                type="date"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                className="h-8 text-sm w-[140px]"
+              />
+            </div>
+            {(fromDate || toDate) && (
+              <Button size="sm" variant="ghost" className="h-8 text-xs" onClick={() => { setFromDate(""); setToDate(""); }}>
+                Xóa lọc
+              </Button>
+            )}
           </div>
         </div>
 
@@ -125,7 +169,14 @@ export default function QcPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>{ENTITY_LABELS[t]}</CardTitle>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>{ENTITY_LABELS[t]}</span>
+                    {(fromDate || toDate) && (
+                      <span className="text-xs font-normal text-muted-foreground">
+                        Đang lọc: {fromDate || "…"} → {toDate || "…"} &bull; {items.length} kết quả
+                      </span>
+                    )}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {isLoading ? (
@@ -134,42 +185,50 @@ export default function QcPage() {
                     <p className="text-sm text-muted-foreground py-8 text-center">Không có mục nào</p>
                   ) : (
                     <div className="space-y-2">
-                      {items.map((item) => (
-                        <div key={`${item.id}-${(item as { id2?: number }).id2 ?? ""}`} className="flex items-start justify-between gap-4 p-4 border rounded-lg hover:bg-accent/30">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <h3 className="font-medium">{item.title}</h3>
-                              <StatusBadge status={item.approvalStatus} />
+                      {items.map((item) => {
+                        const itemStatus = item.approvalStatus as string;
+                        return (
+                          <div key={`${item.id}-${(item as { id2?: number }).id2 ?? ""}`} className="flex items-start justify-between gap-4 p-4 border rounded-lg hover:bg-accent/30">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <h3 className="font-medium">{item.title}</h3>
+                                <StatusBadge status={itemStatus} />
+                              </div>
+                              {item.subtitle && <p className="text-sm text-muted-foreground mt-1">{item.subtitle}</p>}
+                              {item.detail && <p className="text-sm mt-2 line-clamp-2">{item.detail}</p>}
+                              {item.approvalNote && (
+                                <p className="text-xs text-muted-foreground mt-2 italic">Ghi chú: {item.approvalNote}</p>
+                              )}
+                              {(item as { createdAt?: string }).createdAt && (
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  {new Date((item as { createdAt: string }).createdAt).toLocaleDateString("vi-VN")}
+                                </p>
+                              )}
                             </div>
-                            {item.subtitle && <p className="text-sm text-muted-foreground mt-1">{item.subtitle}</p>}
-                            {item.detail && <p className="text-sm mt-2 line-clamp-2">{item.detail}</p>}
-                            {item.approvalNote && (
-                              <p className="text-xs text-muted-foreground mt-2 italic">Ghi chú: {item.approvalNote}</p>
-                            )}
-                          </div>
-                          <div className="flex flex-col gap-2 shrink-0">
-                            {status !== "APPROVED" && (
-                              <Button size="sm" onClick={() => {
-                                setActionDialog({ open: true, mode: "approve", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
-                                setNote("");
-                              }}>
-                                <Check className="h-4 w-4 mr-1" />Duyệt
+                            <div className="flex flex-col gap-2 shrink-0">
+                              {itemStatus !== "APPROVED" && (
+                                <Button size="sm" onClick={() => {
+                                  setActionDialog({ open: true, mode: "approve", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
+                                  setNote("");
+                                }}>
+                                  <Check className="h-4 w-4 mr-1" />Duyệt
+                                </Button>
+                              )}
+                              {itemStatus !== "REJECTED" && (
+                                <Button size="sm" variant="destructive" onClick={() => {
+                                  setActionDialog({ open: true, mode: "reject", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
+                                  setNote("");
+                                }}>
+                                  <X className="h-4 w-4 mr-1" />Từ chối
+                                </Button>
+                              )}
+                              <Button size="sm" variant="outline" onClick={() => setHistoryDialog({ open: true, entityType: t, entityId: item.id, title: item.title })}>
+                                <HistoryIcon className="h-4 w-4 mr-1" />Lịch sử
                               </Button>
-                            )}
-                            {status !== "REJECTED" && (
-                              <Button size="sm" variant="destructive" onClick={() => {
-                                setActionDialog({ open: true, mode: "reject", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
-                                setNote("");
-                              }}>
-                                <X className="h-4 w-4 mr-1" />Từ chối
-                              </Button>
-                            )}
-                            <Button size="sm" variant="outline" onClick={() => setHistoryDialog({ open: true, entityType: t, entityId: item.id, title: item.title })}>
-                              <HistoryIcon className="h-4 w-4 mr-1" />Lịch sử
-                            </Button>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </CardContent>
