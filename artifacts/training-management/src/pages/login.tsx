@@ -57,9 +57,6 @@ export default function LoginPage() {
 
           {/* Tagline */}
           <div className="space-y-3">
-            <h1 className="text-white font-bold text-2xl leading-tight tracking-tight">
-              Hệ thống Quản lý<br />Đào tạo Nội bộ
-            </h1>
             <p className="text-blue-200 text-sm leading-relaxed">
               Quản lý toàn diện khóa học, học viên,<br />giảng viên và cấp chứng chỉ chuyên nghiệp
             </p>
