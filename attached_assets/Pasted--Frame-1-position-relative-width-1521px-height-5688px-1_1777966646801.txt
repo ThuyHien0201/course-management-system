@@ -1,0 +1,3813 @@
+/* Frame 1 */
+
+position: relative;
+width: 1521px;
+height: 5688px;
+
+
+
+/* 1536w default */
+
+position: absolute;
+width: 1521px;
+height: 5688px;
+left: 0px;
+top: 0px;
+overflow-y: scroll;
+
+background: #FFFFFF;
+
+
+/* Background */
+
+position: absolute;
+height: 5688.08px;
+left: 0px;
+right: 0.2px;
+top: 0px;
+
+background: #FFFFFF;
+
+
+/* Background */
+
+position: absolute;
+height: 357.99px;
+left: 0px;
+right: 0px;
+top: 0px;
+
+background: #0047AB;
+
+
+/* Background */
+
+position: absolute;
+height: 144px;
+left: 610.4px;
+right: 766.4px;
+top: 32px;
+
+background: #FFFFFF;
+border-radius: 16px;
+
+
+/* Logo công ty */
+
+position: absolute;
+left: 0px;
+right: 0px;
+top: 0px;
+bottom: 0px;
+
+background: url(.jpg);
+
+
+/* Background */
+
+position: absolute;
+height: 144px;
+left: 766.4px;
+right: 610.4px;
+top: 32px;
+
+background: #FFFFFF;
+border-radius: 16px;
+
+
+/* Logo ISO */
+
+position: absolute;
+left: 0px;
+right: 0px;
+top: 0px;
+bottom: 0px;
+
+background: url(.png);
+
+
+/* Heading 1 → "Giải pháp phù hợp – Hiệu quả tối ưu" */
+
+position: absolute;
+height: 32px;
+left: 543.65px;
+right: 543.46px;
+top: 200px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 24px;
+line-height: 32px;
+/* identical to box height, or 133% */
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #FFFFFF;
+
+
+
+/* HungAnhSciTek cung cấp các sản phẩm công nghệ và dịch vụ về hệ thống tiêu chuẩn chất lượng. Với đội ngũ chuyên gia giàu kinh nghiệm, chúng tôi cam kết mang đến giải pháp phù hợp nhằm giúp khách hàng đạt hiệu quả tối ưu. */
+
+position: absolute;
+height: 73.6px;
+left: 393.29px;
+right: 393.1px;
+top: 249.59px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 15.1px;
+line-height: 26px;
+/* or 172% */
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #FFFFFF;
+
+
+
+/* Main */
+
+position: absolute;
+height: 4825.3px;
+left: 312.4px;
+right: 312.4px;
+top: 357.99px;
+
+
+
+/* Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 155.2px;
+left: 32px;
+right: 32px;
+top: 40px;
+
+background: #FFFFFF;
+border: 1px solid #0047AB;
+border-radius: 14px;
+
+
+/* SVG */
+
+position: absolute;
+height: 24px;
+left: 25.6px;
+right: 782.4px;
+top: 29.6px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 16.67%;
+right: 16.67%;
+top: 8.33%;
+bottom: 8.32%;
+
+border: 2px solid #0047AB;
+
+
+/* Khóa học ISO 9001:2015 trang bị kiến thức về Hệ thống quản lý chất lượng (QMS), giúp học viên hiểu, xây dựng, vận hành và đánh giá nội bộ quy trình theo tiêu chuẩn quốc tế. Khóa học tập trung vào cách tiếp cận quá trình, tư duy rủi ro, cải tiến hiệu suất, và áp dụng PDCA, phù hợp cho mọi tổ chức nhằm nâng cao năng lực cạnh tranh. */
+
+position: absolute;
+height: 99.6px;
+left: 61.6px;
+right: 46.36px;
+top: 27.2px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 15px;
+line-height: 26px;
+/* or 173% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* SVG */
+
+position: absolute;
+height: 32px;
+left: 307.81px;
+right: 556.19px;
+top: 227.2px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 29.18%;
+right: 29.17%;
+top: 53.71%;
+bottom: 8.34%;
+
+border: 2.66667px solid #0047AB;
+
+
+/* Vector */
+
+position: absolute;
+left: 25%;
+right: 25%;
+top: 8.33%;
+bottom: 41.67%;
+
+border: 2.66667px solid #0047AB;
+
+
+/* Heading 2 → KẾT QUẢ TRUY XUẤT */
+
+position: absolute;
+height: 32px;
+left: 347.81px;
+right: 307.61px;
+top: 227.2px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 22.9px;
+line-height: 32px;
+/* identical to box height, or 140% */
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #0047AB;
+
+
+
+/* Heading 3 → THÔNG TIN KHÓA ĐÀO TẠO */
+
+position: absolute;
+height: 28px;
+left: 312.85px;
+right: 312.66px;
+top: 271.2px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 19.8px;
+line-height: 28px;
+/* identical to box height, or 141% */
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #000000;
+
+
+
+/* DT2024-QMS-001 */
+
+position: absolute;
+height: 32px;
+left: 343.01px;
+right: 342.82px;
+top: 331.2px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 22.1px;
+line-height: 32px;
+/* identical to box height, or 145% */
+display: flex;
+align-items: center;
+text-align: center;
+letter-spacing: 0.6px;
+
+color: #0047AB;
+
+
+
+/* Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 159px;
+left: 32px;
+right: 32px;
+top: 387.18px;
+
+background: #0047AB;
+border: 4px solid #0047AB;
+border-radius: 14px;
+
+
+/* Background */
+
+position: absolute;
+height: 87px;
+left: 36px;
+right: 36px;
+top: 36px;
+
+background: #FFFFFF;
+border-radius: 10px;
+
+
+/* Đào tạo hệ thống quản lý chất lượng ISO 9001:2015 */
+
+position: absolute;
+height: 39px;
+left: 87.3px;
+right: 87.11px;
+top: 24px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 23.3px;
+line-height: 39px;
+/* identical to box height, or 167% */
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #0047AB;
+
+
+
+/* Background */
+
+position: absolute;
+height: 40px;
+left: 32px;
+right: 654.32px;
+top: 570.18px;
+
+background: #0047AB;
+border-radius: 10px;
+
+
+/* SVG */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: 16px;
+top: calc(50% - 20px/2);
+
+
+
+/* Vector */
+
+position: absolute;
+left: 8.33%;
+right: 8.33%;
+top: 8.33%;
+bottom: 8.33%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 41.67%;
+bottom: 41.67%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Hiệu lực: 15/03/2027 */
+
+position: absolute;
+width: 149.88px;
+height: 21.61px;
+left: 44px;
+top: calc(50% - 21.61px/2 - 0.39px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 14.6px;
+line-height: 24px;
+/* or 164% */
+display: flex;
+align-items: center;
+
+color: #FFFFFF;
+
+
+
+/* Background+HorizontalBorder */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 875.2px;
+left: 32px;
+right: 32px;
+top: 642.18px;
+
+background: #FFFFFF;
+border-top: 4px solid #0047AB;
+border-radius: 14px;
+
+
+/* Heading 3 */
+
+position: absolute;
+height: 28px;
+left: 32px;
+right: 32px;
+top: 36px;
+
+
+
+/* Background */
+
+position: absolute;
+width: 4px;
+height: 24px;
+left: 0px;
+top: calc(50% - 24px/2);
+
+background: #0047AB;
+border-radius: 4px;
+
+
+/* Thông tin học viên */
+
+position: absolute;
+width: 176.1px;
+height: 26.4px;
+left: 12px;
+top: calc(50% - 26.4px/2 + 0px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 19.4px;
+line-height: 28px;
+/* or 144% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 192px;
+left: 336px;
+right: 336px;
+top: 88px;
+
+border: 4px solid #0047AB;
+border-radius: 14px;
+
+
+/* Ảnh thẻ */
+
+position: absolute;
+left: 4px;
+right: 4px;
+top: 4px;
+bottom: 4px;
+
+background: url(.jpg);
+
+
+/* Ảnh thẻ */
+
+position: absolute;
+height: 20px;
+left: 390.89px;
+right: 390.7px;
+top: 292px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 13.2px;
+line-height: 20px;
+/* identical to box height, or 152% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Paragraph+HorizontalBorder */
+
+position: absolute;
+height: 36.8px;
+left: 32px;
+right: 32px;
+top: 344px;
+
+
+
+/* Mã học viên: */
+
+position: absolute;
+width: 92.53px;
+height: 24px;
+left: 0px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15.1px;
+line-height: 24px;
+/* identical to box height, or 159% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* HV2024001 */
+
+position: absolute;
+height: 24px;
+left: 172px;
+right: 513.69px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 24px;
+/* identical to box height, or 171% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Paragraph+HorizontalBorder */
+
+position: absolute;
+height: 36.8px;
+left: 32px;
+right: 32px;
+top: 396.8px;
+
+
+
+/* Họ và tên: */
+
+position: absolute;
+width: 73.91px;
+height: 24px;
+left: 0px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15.1px;
+line-height: 24px;
+/* identical to box height, or 159% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Nguyễn Văn An */
+
+position: absolute;
+height: 24px;
+left: 172px;
+right: 482.8px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15.1px;
+line-height: 24px;
+/* identical to box height, or 159% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Paragraph+HorizontalBorder */
+
+position: absolute;
+height: 36.8px;
+left: 32px;
+right: 32px;
+top: 449.61px;
+
+
+
+/* Ngày tháng năm sinh: */
+
+position: absolute;
+width: 159.66px;
+height: 24px;
+left: 0px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15.1px;
+line-height: 24px;
+/* identical to box height, or 159% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* 15/05/1990 */
+
+position: absolute;
+height: 24px;
+left: 172px;
+right: 514.33px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 15.1px;
+line-height: 24px;
+/* identical to box height, or 159% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Paragraph+HorizontalBorder */
+
+position: absolute;
+height: 36.8px;
+left: 32px;
+right: 32px;
+top: 502.41px;
+
+
+
+/* CCCD: */
+
+position: absolute;
+width: 44.45px;
+height: 24px;
+left: 0px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 13.6px;
+line-height: 24px;
+/* identical to box height, or 176% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* 079090001234 */
+
+position: absolute;
+height: 24px;
+left: 172px;
+right: 492.3px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 14.1px;
+line-height: 24px;
+/* identical to box height, or 170% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Paragraph+HorizontalBorder */
+
+position: absolute;
+height: 36.8px;
+left: 32px;
+right: 32px;
+top: 555.2px;
+
+
+
+/* Ngày cấp: */
+
+position: absolute;
+width: 72.38px;
+height: 24px;
+left: 0px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15px;
+line-height: 24px;
+/* identical to box height, or 160% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* 10/01/2020 */
+
+position: absolute;
+height: 24px;
+left: 172px;
+right: 514.33px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 15.1px;
+line-height: 24px;
+/* identical to box height, or 159% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Paragraph+HorizontalBorder */
+
+position: absolute;
+height: 36.8px;
+left: 32px;
+right: 32px;
+top: 608px;
+
+
+
+/* Nơi cấp: */
+
+position: absolute;
+width: 60.23px;
+height: 24px;
+left: 0px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15.1px;
+line-height: 24px;
+/* identical to box height, or 159% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Cục Cảnh sát QLHC về TTXH - TP.HCM */
+
+position: absolute;
+height: 24px;
+left: 172px;
+right: 324.65px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 14.5px;
+line-height: 24px;
+/* identical to box height, or 166% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Paragraph+HorizontalBorder */
+
+position: absolute;
+height: 36.8px;
+left: 32px;
+right: 32px;
+top: 660.8px;
+
+
+
+/* Nơi công tác: */
+
+position: absolute;
+width: 96.81px;
+height: 24px;
+left: 0px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15.1px;
+line-height: 24px;
+/* identical to box height, or 159% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Công ty TNHH Công nghệ ABC */
+
+position: absolute;
+height: 24px;
+left: 172px;
+right: 376.84px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 14.9px;
+line-height: 24px;
+/* identical to box height, or 161% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Paragraph+HorizontalBorder */
+
+position: absolute;
+height: 36.8px;
+left: 32px;
+right: 32px;
+top: 713.61px;
+
+
+
+/* Nơi cư trú: */
+
+position: absolute;
+width: 77.65px;
+height: 24px;
+left: 0px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15.3px;
+line-height: 24px;
+/* identical to box height, or 157% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* 123 Nguyễn Thị Minh Khai, Quận 3, TP.HCM */
+
+position: absolute;
+height: 24px;
+left: 172px;
+right: 285.3px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 15px;
+line-height: 24px;
+/* identical to box height, or 160% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Paragraph+HorizontalBorder */
+
+position: absolute;
+height: 36.8px;
+left: 32px;
+right: 32px;
+top: 766.41px;
+
+
+
+/* Số ĐT: */
+
+position: absolute;
+width: 46.88px;
+height: 24px;
+left: 0px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 14.9px;
+line-height: 24px;
+/* identical to box height, or 161% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* 0912 345 678 */
+
+position: absolute;
+height: 24px;
+left: 172px;
+right: 500.78px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 14.5px;
+line-height: 24px;
+/* identical to box height, or 166% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Email: */
+
+position: absolute;
+height: 24px;
+left: 32px;
+right: 756.77px;
+top: 819.2px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 14.9px;
+line-height: 24px;
+/* identical to box height, or 161% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* nguyenvanan@example.com */
+
+position: absolute;
+height: 24px;
+left: 204px;
+right: 418.66px;
+top: 819.2px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 14.9px;
+line-height: 24px;
+/* identical to box height, or 161% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Background+HorizontalBorder */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 281.6px;
+left: 32px;
+right: 32px;
+top: 1549.38px;
+
+background: #FFFFFF;
+border-top: 4px solid #0047AB;
+border-radius: 14px;
+
+
+/* Heading 3 */
+
+position: absolute;
+height: 28px;
+left: 32px;
+right: 32px;
+top: 36px;
+
+
+
+/* Background */
+
+position: absolute;
+width: 4px;
+height: 24px;
+left: 0px;
+top: calc(50% - 24px/2);
+
+background: #0047AB;
+border-radius: 4px;
+
+
+/* Thông tin khóa học */
+
+position: absolute;
+width: 182.66px;
+height: 26.4px;
+left: 12px;
+top: calc(50% - 26.4px/2 + 0px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 19.5px;
+line-height: 28px;
+/* or 144% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Paragraph+HorizontalBorder */
+
+position: absolute;
+height: 36.8px;
+left: 32px;
+right: 32px;
+top: 88px;
+
+
+
+/* Thời gian: */
+
+position: absolute;
+width: 72.08px;
+height: 24px;
+left: 0px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15.1px;
+line-height: 24px;
+/* identical to box height, or 159% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* 15/03/2024 - 18/03/2024 */
+
+position: absolute;
+height: 21.61px;
+left: 172px;
+right: 417.67px;
+top: 0.8px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 14.6px;
+line-height: 24px;
+/* or 164% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Paragraph+HorizontalBorder */
+
+position: absolute;
+height: 36.8px;
+left: 32px;
+right: 32px;
+top: 140.8px;
+
+
+
+/* Thời lượng / Số tiết: */
+
+position: absolute;
+width: 145.83px;
+height: 24px;
+left: 0px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15.3px;
+line-height: 24px;
+/* identical to box height, or 157% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* 32 tiết (4 ngày) */
+
+position: absolute;
+height: 24px;
+left: 172px;
+right: 489.67px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 14.5px;
+line-height: 24px;
+/* identical to box height, or 166% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Địa điểm: */
+
+position: absolute;
+height: 21.6px;
+left: 32px;
+right: 730.94px;
+top: 194.41px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15.3px;
+line-height: 24px;
+/* or 157% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* 207A Nguyễn Văn Thủ, Phường Đa Kao, Quận 1, TP.HCM */
+
+position: absolute;
+height: 24px;
+left: 204px;
+right: 228.69px;
+top: 193.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 15px;
+line-height: 24px;
+/* identical to box height, or 160% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Link → 📍 Xem trên bản đồ */
+
+position: absolute;
+height: 20px;
+left: 204px;
+right: 498.16px;
+top: 228px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 20px;
+/* identical to box height, or 143% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Background+HorizontalBorder */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 1475.91px;
+left: 32px;
+right: 32px;
+top: 1862.98px;
+
+background: #FFFFFF;
+border-top: 4px solid #0047AB;
+border-radius: 14px;
+
+
+/* Heading 3 */
+
+position: absolute;
+height: 28px;
+left: 32px;
+right: 32px;
+top: 36px;
+
+
+
+/* Background */
+
+position: absolute;
+width: 4px;
+height: 24px;
+left: 0px;
+top: calc(50% - 24px/2);
+
+background: #0047AB;
+border-radius: 4px;
+
+
+/* Chương trình đào tạo */
+
+position: absolute;
+width: 203.69px;
+height: 26.4px;
+left: 12px;
+top: calc(50% - 26.4px/2 + 0.01px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 19.5px;
+line-height: 28px;
+/* or 144% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 48px;
+left: 32px;
+right: 752px;
+top: 88px;
+
+background: #0047AB;
+border: 4px solid #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* 1 */
+
+position: absolute;
+width: 9.41px;
+height: 21.6px;
+left: calc(50% - 9.41px/2 + 0.1px);
+top: calc(50% - 21.6px/2 - 0.39px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 16px;
+line-height: 24px;
+/* or 150% */
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #FFFFFF;
+
+
+
+/* Background */
+
+position: absolute;
+height: 95.2px;
+left: 54px;
+right: 774px;
+top: 144px;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Paragraph+Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 135.2px;
+left: 96px;
+right: 32px;
+top: 88px;
+
+background: #FFFFFF;
+border: 1px solid #0047AB;
+border-radius: 14px;
+
+
+/* Heading 3 → Đăng ký */
+
+position: absolute;
+height: 28px;
+left: 21.6px;
+right: 612.49px;
+top: 21.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 17.4px;
+line-height: 28px;
+/* identical to box height, or 161% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Hoàn tất đăng ký khóa học */
+
+position: absolute;
+height: 24px;
+left: 21.6px;
+right: 491.29px;
+top: 61.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 15px;
+line-height: 24px;
+/* identical to box height, or 160% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Người phụ trách: Th.S Đào Duy Nam */
+
+position: absolute;
+height: 18.41px;
+left: 21.6px;
+right: 453.84px;
+top: 94.4px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 13.3px;
+line-height: 20px;
+/* or 150% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 48px;
+left: 32px;
+right: 752px;
+top: 271.21px;
+
+background: #0047AB;
+border: 4px solid #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* 2 */
+
+position: absolute;
+width: 9.41px;
+height: 21.6px;
+left: calc(50% - 9.41px/2 + 0.1px);
+top: calc(50% - 21.6px/2 - 0.41px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 16px;
+line-height: 24px;
+/* or 150% */
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #FFFFFF;
+
+
+
+/* Background */
+
+position: absolute;
+height: 563.11px;
+left: 54px;
+right: 774px;
+top: 327.21px;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Paragraph+Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 603.11px;
+left: 96px;
+right: 32px;
+top: 271.21px;
+
+background: #FFFFFF;
+border: 1px solid #0047AB;
+border-radius: 14px;
+
+
+/* Heading 3 → Chương trình học */
+
+position: absolute;
+height: 28px;
+left: 21.6px;
+right: 533.31px;
+top: 21.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 17.3px;
+line-height: 28px;
+/* identical to box height, or 162% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Ngày 1 - Buổi sáng */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 557.42px;
+top: 61.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 13.9px;
+line-height: 20px;
+/* identical to box height, or 144% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Giới thiệu ISO 9001:2015 và các yêu cầu cơ bản */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 390.99px;
+top: 85.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 12.9px;
+line-height: 20px;
+/* identical to box height, or 155% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Giảng viên: TS. Trần Minh Hoàng */
+
+position: absolute;
+height: 16px;
+left: 21.6px;
+right: 506.34px;
+top: 109.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 11.1px;
+line-height: 16px;
+/* identical to box height, or 144% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Ngày 1 - Buổi chiều */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 553.09px;
+top: 137.58px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 13.9px;
+line-height: 20px;
+/* identical to box height, or 144% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Phân tích ngữ cảnh tổ chức và các bên liên quan */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 384.05px;
+top: 161.58px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 13px;
+line-height: 20px;
+/* identical to box height, or 154% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Giảng viên: ThS. Lê Thị Mai */
+
+position: absolute;
+height: 16px;
+left: 21.6px;
+right: 537.79px;
+top: 185.58px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 11.1px;
+line-height: 16px;
+/* identical to box height, or 144% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Ngày 2 - Buổi sáng */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 557.42px;
+top: 213.57px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 13.7px;
+line-height: 20px;
+/* identical to box height, or 146% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Lãnh đạo và cam kết - Vai trò của lãnh đạo */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 419.17px;
+top: 237.57px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 13px;
+line-height: 20px;
+/* identical to box height, or 154% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Giảng viên: TS. Trần Minh Hoàng */
+
+position: absolute;
+height: 16px;
+left: 21.6px;
+right: 506.34px;
+top: 261.57px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 11.1px;
+line-height: 16px;
+/* identical to box height, or 144% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Ngày 2 - Buổi chiều */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 553.09px;
+top: 289.56px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 13.7px;
+line-height: 20px;
+/* identical to box height, or 146% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Quản lý rủi ro và cơ hội */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 538.07px;
+top: 313.56px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 13.3px;
+line-height: 20px;
+/* identical to box height, or 150% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Giảng viên: ThS. Phạm Văn Tùng */
+
+position: absolute;
+height: 16px;
+left: 21.6px;
+right: 509.29px;
+top: 337.56px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 11.1px;
+line-height: 16px;
+/* identical to box height, or 144% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Ngày 3 - Buổi sáng */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 557.42px;
+top: 365.54px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 13.6px;
+line-height: 20px;
+/* identical to box height, or 147% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Hoạch định và kiểm soát hoạt động */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 461.87px;
+top: 389.54px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 13.1px;
+line-height: 20px;
+/* identical to box height, or 153% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Giảng viên: ThS. Lê Thị Mai */
+
+position: absolute;
+height: 16px;
+left: 21.6px;
+right: 537.79px;
+top: 413.54px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 11.1px;
+line-height: 16px;
+/* identical to box height, or 144% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Ngày 3 - Buổi chiều */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 553.09px;
+top: 441.53px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 13.6px;
+line-height: 20px;
+/* identical to box height, or 147% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Đánh giá hiệu suất và cải tiến liên tục */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 452.34px;
+top: 465.53px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 13.1px;
+line-height: 20px;
+/* identical to box height, or 153% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Giảng viên: TS. Trần Minh Hoàng */
+
+position: absolute;
+height: 16px;
+left: 21.6px;
+right: 506.34px;
+top: 489.53px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 11.1px;
+line-height: 16px;
+/* identical to box height, or 144% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Ngày 4 - Buổi sáng */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 557.42px;
+top: 517.52px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 13.6px;
+line-height: 20px;
+/* identical to box height, or 147% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Thực hành áp dụng ISO 9001 vào thực tế */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 429.61px;
+top: 541.52px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 13px;
+line-height: 20px;
+/* identical to box height, or 154% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Giảng viên: ThS. Phạm Văn Tùng */
+
+position: absolute;
+height: 16px;
+left: 21.6px;
+right: 509.29px;
+top: 565.52px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 11.1px;
+line-height: 16px;
+/* identical to box height, or 144% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 48px;
+left: 32px;
+right: 752px;
+top: 922.32px;
+
+background: #0047AB;
+border: 4px solid #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* 3 */
+
+position: absolute;
+width: 9.41px;
+height: 21.6px;
+left: calc(50% - 9.41px/2 + 0.1px);
+top: calc(50% - 21.6px/2 - 0.4px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 16px;
+line-height: 24px;
+/* or 150% */
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #FFFFFF;
+
+
+
+/* Background */
+
+position: absolute;
+height: 95.2px;
+left: 54px;
+right: 774px;
+top: 978.32px;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Paragraph+Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 135.2px;
+left: 96px;
+right: 32px;
+top: 922.32px;
+
+background: #FFFFFF;
+border: 1px solid #0047AB;
+border-radius: 14px;
+
+
+/* Heading 3 → Bài kiểm tra / Kết quả */
+
+position: absolute;
+height: 28px;
+left: 21.6px;
+right: 497.64px;
+top: 21.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 18px;
+line-height: 28px;
+/* identical to box height, or 156% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Đạt - 85/100 điểm */
+
+position: absolute;
+height: 24px;
+left: 21.6px;
+right: 553.06px;
+top: 61.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 15px;
+line-height: 24px;
+/* identical to box height, or 160% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Người phụ trách: Hội đồng kiểm tra */
+
+position: absolute;
+height: 18.4px;
+left: 21.6px;
+right: 458.01px;
+top: 94.4px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 13.3px;
+line-height: 20px;
+/* or 150% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 48px;
+left: 32px;
+right: 752px;
+top: 1105.52px;
+
+background: #0047AB;
+border: 4px solid #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* 4 */
+
+position: absolute;
+width: 9.41px;
+height: 21.6px;
+left: calc(50% - 9.41px/2 + 0.1px);
+top: calc(50% - 21.6px/2 - 0.4px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 16px;
+line-height: 24px;
+/* or 150% */
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #FFFFFF;
+
+
+
+/* Background */
+
+position: absolute;
+height: 95.2px;
+left: 54px;
+right: 774px;
+top: 1161.52px;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Paragraph+Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 135.2px;
+left: 96px;
+right: 32px;
+top: 1105.52px;
+
+background: #FFFFFF;
+border: 1px solid #0047AB;
+border-radius: 14px;
+
+
+/* Heading 3 → Quyết định cấp GCN */
+
+position: absolute;
+height: 28px;
+left: 21.6px;
+right: 510.36px;
+top: 21.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 17.3px;
+line-height: 28px;
+/* identical to box height, or 162% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Đã phê duyệt */
+
+position: absolute;
+height: 24px;
+left: 21.6px;
+right: 587.24px;
+top: 61.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 15px;
+line-height: 24px;
+/* identical to box height, or 160% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Người phụ trách: Th.S Đào Duy Nam */
+
+position: absolute;
+height: 18.4px;
+left: 21.6px;
+right: 453.84px;
+top: 94.4px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 13.3px;
+line-height: 20px;
+/* or 150% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 48px;
+left: 32px;
+right: 752px;
+top: 1288.72px;
+
+background: #0047AB;
+border: 4px solid #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* 5 */
+
+position: absolute;
+width: 9.41px;
+height: 21.6px;
+left: calc(50% - 9.41px/2 + 0.1px);
+top: calc(50% - 21.6px/2 - 0.4px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 16px;
+line-height: 24px;
+/* or 150% */
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #FFFFFF;
+
+
+
+/* Paragraph+Background+Border */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 139.2px;
+left: 96px;
+right: 32px;
+top: 1288.72px;
+
+background: #FFFFFF;
+border: 1px solid #0047AB;
+border-radius: 14px;
+
+
+/* Heading 3 → Nơi in GCN */
+
+position: absolute;
+height: 28px;
+left: 21.6px;
+right: 587.34px;
+top: 21.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 18px;
+line-height: 28px;
+/* identical to box height, or 156% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Xưởng in chứng chỉ HungAnhSciTek */
+
+position: absolute;
+height: 24px;
+left: 21.6px;
+right: 429.99px;
+top: 61.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 14.9px;
+line-height: 24px;
+/* identical to box height, or 161% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Link → 📍 Xem bản đồ */
+
+position: absolute;
+height: 20px;
+left: 21.6px;
+right: 582.12px;
+top: 96px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 20px;
+/* identical to box height, or 143% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Background+HorizontalBorder */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 1382.4px;
+left: 32px;
+right: 32px;
+top: 3370.9px;
+
+background: #FFFFFF;
+border-top: 4px solid #0047AB;
+border-radius: 14px;
+
+
+/* Heading 3 */
+
+position: absolute;
+height: 28px;
+left: 32px;
+right: 32px;
+top: 36px;
+
+
+
+/* Background */
+
+position: absolute;
+width: 4px;
+height: 24px;
+left: 0px;
+top: calc(50% - 24px/2);
+
+background: #0047AB;
+border-radius: 4px;
+
+
+/* Quá trình lớp học */
+
+position: absolute;
+width: 164.9px;
+height: 26.4px;
+left: 12px;
+top: calc(50% - 26.4px/2 - 0px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 19.7px;
+line-height: 28px;
+/* or 142% */
+display: flex;
+align-items: center;
+
+color: #0047AB;
+
+
+
+/* Background */
+
+position: absolute;
+height: 12px;
+left: 32px;
+right: 788px;
+top: 96px;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* 15/03/2024 - Ngày đầu tiên - Buổi khai giảng khóa học */
+
+position: absolute;
+height: 24px;
+left: 60px;
+right: 373.2px;
+top: 88px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15.1px;
+line-height: 24px;
+/* identical to box height, or 159% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Container */
+
+position: absolute;
+height: 261.6px;
+left: 60px;
+right: 32px;
+top: 124px;
+
+border-radius: 14px;
+
+
+/* Container */
+
+position: absolute;
+height: 261.6px;
+left: 0px;
+right: 0px;
+top: 0px;
+
+
+
+/* Container */
+
+position: absolute;
+width: 732px;
+height: 256px;
+left: calc(50% - 732px/2);
+top: 0px;
+
+border-radius: 14px;
+
+
+/* ForBiggerBlazes.mp4 */
+
+position: absolute;
+height: 150px;
+left: 0px;
+right: 0px;
+top: 0px;
+
+background: linear-gradient(0deg, #333333, #333333), #000000;
+
+
+/* Background */
+
+position: absolute;
+height: 150px;
+left: 0px;
+right: 0px;
+bottom: 0px;
+
+background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.01) 8.1%, rgba(0, 0, 0, 0.047) 15.5%, rgba(0, 0, 0, 0.106) 22.5%, rgba(0, 0, 0, 0.176) 29%, rgba(0, 0, 0, 0.26) 35.3%, rgba(0, 0, 0, 0.353) 41.2%, rgba(0, 0, 0, 0.45) 47.1%, rgba(0, 0, 0, 0.55) 52.9%, rgba(0, 0, 0, 0.647) 58.8%, rgba(0, 0, 0, 0.74) 64.7%, rgba(0, 0, 0, 0.824) 71%, rgba(0, 0, 0, 0.894) 77.5%, rgba(0, 0, 0, 0.953) 84.5%, rgba(0, 0, 0, 0.99) 91.9%, #000000 100%);
+
+
+/* Container */
+
+position: absolute;
+height: 48px;
+left: 0px;
+right: 0px;
+bottom: 24px;
+
+
+
+/* 0:00 */
+
+position: absolute;
+width: 27.61px;
+height: 48px;
+left: 48px;
+bottom: 0px;
+
+font-family: 'Roboto';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 48px;
+/* identical to box height, or 343% */
+display: flex;
+align-items: center;
+text-align: right;
+
+color: #FFFFFF;
+
+
+
+/* Input - play */
+
+position: absolute;
+width: 48px;
+height: 48px;
+left: 0px;
+bottom: 0px;
+
+opacity: 0.3;
+
+
+/* image */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: calc(50% - 20px/2);
+top: calc(50% - 20px/2);
+
+
+
+/* Vector */
+
+position: absolute;
+left: 33.33%;
+right: 20.83%;
+top: 20.83%;
+bottom: 20.83%;
+
+background: #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 0%;
+right: 0%;
+top: 0%;
+bottom: 0%;
+
+
+
+/* Background */
+
+position: absolute;
+width: 36px;
+height: 36px;
+left: 596px;
+bottom: 6px;
+
+background: #202124;
+opacity: 0;
+border-radius: 18px;
+
+
+/* Input - unmute */
+
+position: absolute;
+width: 48px;
+height: 48px;
+left: 588px;
+bottom: 0px;
+
+opacity: 0.3;
+
+
+/* image */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: calc(50% - 20px/2);
+top: calc(50% - 20px/2);
+
+
+
+/* Vector */
+
+position: absolute;
+left: 12.5%;
+right: 12.5%;
+top: 12.5%;
+bottom: 12.5%;
+
+background: #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 0%;
+right: 0%;
+top: 0%;
+bottom: 0%;
+
+
+
+/* Input - enter full screen */
+
+position: absolute;
+width: 48px;
+height: 48px;
+left: 636px;
+bottom: 0px;
+
+opacity: 0.3;
+
+
+/* image */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: calc(50% - 20px/2);
+top: calc(50% - 20px/2);
+
+
+
+/* Vector */
+
+position: absolute;
+left: 0%;
+right: 0%;
+top: 0%;
+bottom: 0%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 20.83%;
+right: 20.83%;
+top: 20.83%;
+bottom: 20.83%;
+
+background: #000000;
+
+
+/* Input menu - show more media controls */
+
+position: absolute;
+width: 48px;
+height: 48px;
+left: 684px;
+bottom: 0px;
+
+opacity: 0.3;
+
+
+/* image */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: calc(50% - 20px/2);
+top: calc(50% - 20px/2);
+
+
+
+/* Group */
+
+position: absolute;
+left: 41.67%;
+right: 41.67%;
+top: 16.67%;
+bottom: 16.67%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 41.67%;
+right: 41.67%;
+top: 16.67%;
+bottom: 66.67%;
+
+background: #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 41.67%;
+right: 41.67%;
+top: 41.67%;
+bottom: 41.67%;
+
+background: #000000;
+
+
+/* Vector */
+
+position: absolute;
+left: 41.67%;
+right: 41.67%;
+top: 66.67%;
+bottom: 16.67%;
+
+background: #000000;
+
+
+/* Input - video time scrubber */
+
+position: absolute;
+height: 4px;
+left: 16px;
+right: 16px;
+bottom: 20px;
+
+background: rgba(255, 255, 255, 0.3);
+box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
+border-radius: 2px;
+
+
+/* Button - Previous slide */
+
+position: absolute;
+width: 36px;
+left: 8px;
+top: 43.12%;
+bottom: 43.12%;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Button - Previous slide:shadow */
+
+position: absolute;
+left: 0px;
+right: 0px;
+top: 0px;
+bottom: 0px;
+
+background: rgba(255, 255, 255, 0.002);
+box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+border-radius: 2.68435e+07px;
+
+
+/* SVG */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: 8px;
+top: 8px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 25%;
+bottom: 25%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Button - Next slide */
+
+position: absolute;
+width: 36px;
+right: 8px;
+top: 43.12%;
+bottom: 43.12%;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Button - Next slide:shadow */
+
+position: absolute;
+left: 0px;
+right: 0px;
+top: 0px;
+bottom: 0px;
+
+background: rgba(255, 255, 255, 0.002);
+box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+border-radius: 2.68435e+07px;
+
+
+/* SVG */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: 8px;
+top: 8px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 25%;
+bottom: 25%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Background */
+
+position: absolute;
+height: 12px;
+left: 32px;
+right: 788px;
+top: 417.6px;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* 16/03/2024 - Ngày 2 - Thảo luận nhóm */
+
+position: absolute;
+height: 24px;
+left: 60px;
+right: 489px;
+top: 409.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 15px;
+line-height: 24px;
+/* identical to box height, or 160% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Container */
+
+position: absolute;
+height: 261.6px;
+left: 60px;
+right: 32px;
+top: 445.6px;
+
+border-radius: 14px;
+
+
+/* Container */
+
+position: absolute;
+height: 261.6px;
+left: 0px;
+right: 0px;
+top: 0px;
+
+
+
+/* Container */
+
+position: absolute;
+width: 732px;
+height: 256px;
+left: calc(50% - 732px/2);
+top: 0px;
+
+border-radius: 14px;
+
+
+/* Thảo luận nhóm */
+
+position: absolute;
+height: 412.09px;
+left: 0px;
+right: 0px;
+top: 0px;
+
+background: url(.jpg);
+
+
+/* Button - Previous slide */
+
+position: absolute;
+width: 36px;
+left: 8px;
+top: 43.12%;
+bottom: 43.12%;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Button - Previous slide:shadow */
+
+position: absolute;
+left: 0px;
+right: 0px;
+top: 0px;
+bottom: 0px;
+
+background: rgba(255, 255, 255, 0.002);
+box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+border-radius: 2.68435e+07px;
+
+
+/* SVG */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: 8px;
+top: 8px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 25%;
+bottom: 25%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Button - Next slide */
+
+position: absolute;
+width: 36px;
+right: 8px;
+top: 43.12%;
+bottom: 43.12%;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Button - Next slide:shadow */
+
+position: absolute;
+left: 0px;
+right: 0px;
+top: 0px;
+bottom: 0px;
+
+background: rgba(255, 255, 255, 0.002);
+box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+border-radius: 2.68435e+07px;
+
+
+/* SVG */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: 8px;
+top: 8px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 25%;
+bottom: 25%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Background */
+
+position: absolute;
+height: 12px;
+left: 32px;
+right: 788px;
+top: 739.2px;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* 17/03/2024 - Ngày 3 - Thực hành */
+
+position: absolute;
+height: 24px;
+left: 60px;
+right: 531.42px;
+top: 731.2px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 14.8px;
+line-height: 24px;
+/* identical to box height, or 162% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Container */
+
+position: absolute;
+height: 261.6px;
+left: 60px;
+right: 32px;
+top: 767.2px;
+
+border-radius: 14px;
+
+
+/* Container */
+
+position: absolute;
+height: 261.6px;
+left: 0px;
+right: 0px;
+top: 0px;
+
+
+
+/* Container */
+
+position: absolute;
+width: 732px;
+height: 256px;
+left: calc(50% - 732px/2);
+top: 0px;
+
+border-radius: 14px;
+
+
+/* Thực hành */
+
+position: absolute;
+height: 488px;
+left: 0px;
+right: 0px;
+top: 0px;
+
+background: url(.jpg);
+
+
+/* Button - Previous slide */
+
+position: absolute;
+width: 36px;
+left: 8px;
+top: 43.12%;
+bottom: 43.12%;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Button - Previous slide:shadow */
+
+position: absolute;
+left: 0px;
+right: 0px;
+top: 0px;
+bottom: 0px;
+
+background: rgba(255, 255, 255, 0.002);
+box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+border-radius: 2.68435e+07px;
+
+
+/* SVG */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: 8px;
+top: 8px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 25%;
+bottom: 25%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Button - Next slide */
+
+position: absolute;
+width: 36px;
+right: 8px;
+top: 43.12%;
+bottom: 43.12%;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Button - Next slide:shadow */
+
+position: absolute;
+left: 0px;
+right: 0px;
+top: 0px;
+bottom: 0px;
+
+background: rgba(255, 255, 255, 0.002);
+box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+border-radius: 2.68435e+07px;
+
+
+/* SVG */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: 8px;
+top: 8px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 25%;
+bottom: 25%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Background */
+
+position: absolute;
+height: 12px;
+left: 32px;
+right: 788px;
+top: 1060.8px;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* 18/03/2024 - Ngày cuối - Lễ trao chứng chỉ */
+
+position: absolute;
+height: 24px;
+left: 60px;
+right: 459.82px;
+top: 1052.8px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 14.9px;
+line-height: 24px;
+/* identical to box height, or 161% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Container */
+
+position: absolute;
+height: 261.6px;
+left: 60px;
+right: 32px;
+top: 1088.8px;
+
+border-radius: 14px;
+
+
+/* Container */
+
+position: absolute;
+height: 261.6px;
+left: 0px;
+right: 0px;
+top: 0px;
+
+
+
+/* Container */
+
+position: absolute;
+width: 732px;
+height: 256px;
+left: calc(50% - 732px/2);
+top: 0px;
+
+border-radius: 14px;
+
+
+/* Lễ trao chứng chỉ */
+
+position: absolute;
+height: 488px;
+left: 0px;
+right: 0px;
+top: 0px;
+
+background: url(.jpg);
+
+
+/* Button - Previous slide */
+
+position: absolute;
+width: 36px;
+left: 8px;
+top: 43.12%;
+bottom: 43.12%;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Button - Previous slide:shadow */
+
+position: absolute;
+left: 0px;
+right: 0px;
+top: 0px;
+bottom: 0px;
+
+background: rgba(255, 255, 255, 0.002);
+box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+border-radius: 2.68435e+07px;
+
+
+/* SVG */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: 8px;
+top: 8px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 25%;
+bottom: 25%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Button - Next slide */
+
+position: absolute;
+width: 36px;
+right: 8px;
+top: 43.12%;
+bottom: 43.12%;
+
+background: #0047AB;
+border-radius: 2.68435e+07px;
+
+
+/* Button - Next slide:shadow */
+
+position: absolute;
+left: 0px;
+right: 0px;
+top: 0px;
+bottom: 0px;
+
+background: rgba(255, 255, 255, 0.002);
+box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+border-radius: 2.68435e+07px;
+
+
+/* SVG */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: 8px;
+top: 8px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 25%;
+bottom: 25%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Footer */
+
+position: absolute;
+height: 440.79px;
+left: 0px;
+right: 0px;
+top: 5247.29px;
+
+background: #43E0CD;
+
+
+/* Heading 3 → CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ KHOA
+HỌC VÀ KỸ THUẬT HÙNG ANH */
+
+position: absolute;
+height: 71px;
+left: 168.4px;
+right: 824.2px;
+top: 51.2px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 23.6px;
+line-height: 39px;
+/* or 165% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Background */
+
+position: absolute;
+height: 36px;
+left: 168.4px;
+right: 1316.4px;
+top: 150px;
+
+background: #0047AB;
+border-radius: 10px;
+
+
+/* SVG */
+
+position: absolute;
+width: 20px;
+height: 20px;
+left: 8px;
+top: 8px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 16.67%;
+right: 16.67%;
+top: 8.33%;
+bottom: 8.34%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 29.17%;
+bottom: 45.83%;
+
+border: 1.66667px solid #FFFFFF;
+
+
+/* Tầng 1, Số 207A Nguyễn Văn Thủ, Phường Tân Định, Thành phố Hồ Chí Minh, Việt Nam */
+
+position: absolute;
+height: 41.15px;
+left: 216.4px;
+right: 982.15px;
+top: 151.6px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 13.1px;
+line-height: 23px;
+/* or 174% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* MST: */
+
+position: absolute;
+height: 20px;
+left: 169.84px;
+right: 1317.63px;
+top: 219.5px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 13.3px;
+line-height: 20px;
+/* identical to box height, or 150% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* 0319226202 */
+
+position: absolute;
+height: 20px;
+left: 216.4px;
+right: 1228.52px;
+top: 219.5px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 600;
+font-size: 12.1px;
+line-height: 20px;
+/* identical to box height, or 165% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Heading 3 → Liên hệ */
+
+position: absolute;
+height: 32px;
+left: 784.4px;
+right: 655.55px;
+top: 48px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 22.9px;
+line-height: 32px;
+/* identical to box height, or 140% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Link */
+
+position: absolute;
+height: 48px;
+left: 784.4px;
+right: 168.4px;
+top: 103.99px;
+
+
+
+/* Background */
+
+position: absolute;
+width: 48px;
+height: 48px;
+left: 0px;
+top: calc(50% - 48px/2);
+
+background: #0047AB;
+border-radius: 14px;
+
+
+/* SVG */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 12px;
+top: 12px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 8.8%;
+right: 8.33%;
+top: 8.33%;
+bottom: 8.63%;
+
+border: 2px solid #FFFFFF;
+
+
+/* Hotline */
+
+position: absolute;
+width: 38.7px;
+height: 16px;
+left: 64px;
+top: calc(50% - 16px/2 - 16px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 11.4px;
+line-height: 16px;
+/* identical to box height, or 140% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* 0989 23 23 84 */
+
+position: absolute;
+width: 118.64px;
+height: 28px;
+left: 64px;
+top: calc(50% - 28px/2 + 9.98px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 16.2px;
+line-height: 28px;
+/* identical to box height, or 173% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Link */
+
+position: absolute;
+height: 48px;
+left: 784.4px;
+right: 168.4px;
+top: 167.99px;
+
+
+
+/* Background */
+
+position: absolute;
+width: 48px;
+height: 48px;
+left: 0px;
+top: calc(50% - 48px/2);
+
+background: #0047AB;
+border-radius: 14px;
+
+
+/* SVG */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 12px;
+top: 12px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 8.33%;
+right: 8.33%;
+top: 16.67%;
+bottom: 16.67%;
+
+border: 2px solid #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 8.33%;
+right: 8.33%;
+top: 29.17%;
+bottom: 45.85%;
+
+border: 2px solid #FFFFFF;
+
+
+/* Email */
+
+position: absolute;
+width: 28.53px;
+height: 16px;
+left: 64px;
+top: calc(50% - 16px/2 - 14px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 11.3px;
+line-height: 16px;
+/* identical to box height, or 142% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* training@hascitek.vn */
+
+position: absolute;
+width: 159.64px;
+height: 24px;
+left: 64px;
+top: calc(50% - 24px/2 + 9.98px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 15.1px;
+line-height: 24px;
+/* identical to box height, or 159% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* Link */
+
+position: absolute;
+height: 48px;
+left: 784.4px;
+right: 168.4px;
+top: 231.99px;
+
+
+
+/* Background */
+
+position: absolute;
+width: 48px;
+height: 48px;
+left: 0px;
+top: calc(50% - 48px/2);
+
+background: #0047AB;
+border-radius: 14px;
+
+
+/* SVG */
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 12px;
+top: 12px;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 62.5%;
+right: 12.5%;
+top: 12.5%;
+bottom: 62.5%;
+
+border: 2px solid #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 41.67%;
+right: 12.5%;
+top: 12.5%;
+bottom: 41.67%;
+
+border: 2px solid #FFFFFF;
+
+
+/* Vector */
+
+position: absolute;
+left: 12.5%;
+right: 25%;
+top: 25%;
+bottom: 12.5%;
+
+border: 2px solid #FFFFFF;
+
+
+/* Website */
+
+position: absolute;
+width: 42.61px;
+height: 16px;
+left: 64px;
+top: calc(50% - 16px/2 - 14px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 11.1px;
+line-height: 16px;
+/* identical to box height, or 144% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* hascitek.vn */
+
+position: absolute;
+width: 84.81px;
+height: 24px;
+left: 64px;
+top: calc(50% - 24px/2 + 9.98px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 14.8px;
+line-height: 24px;
+/* identical to box height, or 162% */
+display: flex;
+align-items: center;
+
+color: #000000;
+
+
+
+/* HorizontalBorder */
+
+box-sizing: border-box;
+
+position: absolute;
+height: 64.8px;
+left: 168.4px;
+right: 168.4px;
+top: 327.99px;
+
+border-top: 0.8px solid #000000;
+
+
+/* Được thực hiển bởi */
+
+position: absolute;
+height: 21.43px;
+left: 466.33px;
+right: 581.73px;
+top: 38.08px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 700;
+font-size: 14.5px;
+line-height: 21px;
+/* identical to box height, or 148% */
+display: flex;
+align-items: center;
+text-align: center;
+
+color: #000000;
+
+
+
+/* Checkee Logo */
+
+position: absolute;
+height: 32px;
+left: 610.06px;
+right: 466.34px;
+top: 32.8px;
+
+background: url(.png);

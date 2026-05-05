@@ -219,7 +219,7 @@ export default function CertificatesPage() {
                       className={`h-7 gap-1 text-xs ${s.hasCertificate ? "border-[#0047AB]/40 text-[#0047AB] hover:bg-[#0047AB]/10" : "text-muted-foreground"}`}
                       onClick={() => setPreviewStudentId(s.studentId)}
                     >
-                      <Eye className="h-3 w-3" /> Demo
+                      <Eye className="h-3 w-3" /> Xem
                     </Button>
                   </td>
                   <td className="px-4 py-3">
@@ -315,6 +315,7 @@ export default function CertificatesPage() {
           onClose={() => setPreviewStudentId(null)}
           student={previewStudentId ? (students.find((s) => s.studentId === previewStudentId) ?? null) as Parameters<typeof CertificatePreview>[0]["student"] : null}
           classData={selectedClassData ? {
+            id: selectedClassData.id,
             name: selectedClassData.name,
             courseName: selectedClassData.courseName,
             startDate: selectedClassData.startDate,

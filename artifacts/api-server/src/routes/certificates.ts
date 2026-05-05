@@ -85,7 +85,17 @@ router.get("/:classId/students", async (req, res) => {
       studentCode: s.studentCode,
       fullName: s.fullName,
       dateOfBirth: s.dateOfBirth ?? null,
+      idNumber: s.idNumber ?? null,
+      idIssueDate: s.idIssueDate ?? null,
+      idIssuePlace: s.idIssuePlace ?? null,
+      workplace: s.workplace ?? null,
+      address: s.address ?? null,
+      phone: s.phone ?? null,
+      email: s.email ?? null,
+      photoUrl: s.photoUrl ?? null,
       courseName: course?.name ?? "",
+      courseContent: course?.content ?? null,
+      courseDuration: course?.duration ?? null,
       hasCertificate: !!cert,
       issueDate: cert?.issueDate ?? null,
       expiryDate: cert?.expiryDate ?? null,
@@ -95,6 +105,8 @@ router.get("/:classId/students", async (req, res) => {
       approvalStatus: cert?.approvalStatus ?? null,
       approvalNote: cert?.approvalNote ?? null,
       resultApprovalStatus: s.resultApprovalStatus ?? null,
+      testScore: s.testScore ?? null,
+      grade: s.grade ?? null,
     };
   }));
   res.json(result);
