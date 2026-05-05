@@ -213,18 +213,14 @@ export default function CertificatesPage() {
                   <td className="px-4 py-3 text-muted-foreground">{s.issueDate || "—"}</td>
                   <td className="px-4 py-3 text-muted-foreground">{s.expiryDate || "—"}</td>
                   <td className="px-4 py-3">
-                    {s.hasCertificate ? (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-7 gap-1 text-xs border-[#0047AB]/40 text-[#0047AB] hover:bg-[#0047AB]/10"
-                        onClick={() => setPreviewStudentId(s.studentId)}
-                      >
-                        <Eye className="h-3 w-3" /> Demo
-                      </Button>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className={`h-7 gap-1 text-xs ${s.hasCertificate ? "border-[#0047AB]/40 text-[#0047AB] hover:bg-[#0047AB]/10" : "text-muted-foreground"}`}
+                      onClick={() => setPreviewStudentId(s.studentId)}
+                    >
+                      <Eye className="h-3 w-3" /> Demo
+                    </Button>
                   </td>
                   <td className="px-4 py-3">
                     {s.hasCertificate ? (
