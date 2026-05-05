@@ -206,21 +206,21 @@ export default function QcPage() {
                               )}
                             </div>
                             <div className="flex flex-col gap-2 shrink-0">
-                              {itemStatus !== "APPROVED" && (
-                                <Button size="sm" onClick={() => {
-                                  setActionDialog({ open: true, mode: "approve", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
-                                  setNote("");
-                                }}>
-                                  <Check className="h-4 w-4 mr-1" />Duyệt
-                                </Button>
-                              )}
-                              {itemStatus !== "REJECTED" && (
-                                <Button size="sm" variant="destructive" onClick={() => {
-                                  setActionDialog({ open: true, mode: "reject", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
-                                  setNote("");
-                                }}>
-                                  <X className="h-4 w-4 mr-1" />Từ chối
-                                </Button>
+                              {itemStatus === "PENDING" && (
+                                <>
+                                  <Button size="sm" onClick={() => {
+                                    setActionDialog({ open: true, mode: "approve", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
+                                    setNote("");
+                                  }}>
+                                    <Check className="h-4 w-4 mr-1" />Duyệt
+                                  </Button>
+                                  <Button size="sm" variant="destructive" onClick={() => {
+                                    setActionDialog({ open: true, mode: "reject", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
+                                    setNote("");
+                                  }}>
+                                    <X className="h-4 w-4 mr-1" />Từ chối
+                                  </Button>
+                                </>
                               )}
                               <Button size="sm" variant="outline" onClick={() => setHistoryDialog({ open: true, entityType: t, entityId: item.id, title: item.title })}>
                                 <HistoryIcon className="h-4 w-4 mr-1" />Lịch sử
@@ -282,7 +282,9 @@ function HistoryDialog({ dialog, onClose }: { dialog: { open: boolean; entityTyp
               {history.map((h) => (
                 <div key={h.id} className="border rounded p-3 space-y-1">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-medium">{h.action === "APPROVE" ? "✅ Phê duyệt" : "❌ Từ chối"}</span>
+                    <span className="text-xs font-medium">
+                      {h.action === "APPROVE" ? "✅ Phê duyệt" : h.action === "RESUBMIT" ? "🔄 Gửi lại yêu cầu" : "❌ Từ chối"}
+                    </span>
                     <span className="text-xs text-muted-foreground">{new Date(h.createdAt).toLocaleString("vi-VN")}</span>
                   </div>
                   {h.note && <p className="text-sm">{h.note}</p>}

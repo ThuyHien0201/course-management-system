@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { sessionsTable, instructorsTable } from "@workspace/db";
+import { sessionsTable, instructorsTable, approvalHistoryTable } from "@workspace/db";
 import { eq, and } from "drizzle-orm";
 import { z } from "zod";
 
@@ -46,12 +46,16 @@ router.put("/:sessionId", async (req, res) => {
   const classId = Number(req.params.classId);
   const sessionId = Number(req.params.sessionId);
   const body = sessionBodySchema.parse(req.body);
+  const [before] = await db.select({ s: sessionsTable.approvalStatus }).from(sessionsTable).where(eq(sessionsTable.id, sessionId));
   const [session] = await db
     .update(sessionsTable)
     .set({ ...body, approvalStatus: "PENDING", approvalNote: null, approvedAt: null })
     .where(and(eq(sessionsTable.id, sessionId), eq(sessionsTable.classId, classId)))
     .returning();
   if (!session) return res.status(404).json({ error: "Not found" });
+  if (before && before.s !== "PENDING") {
+    await db.insert(approvalHistoryTable).values({ entityType: "session", entityId: sessionId, action: "RESUBMIT", status: "PENDING", note: "Đã chỉnh sửa và gửi lại yêu cầu duyệt" });
+  }
   res.json(await enrichSession(session));
 });
 

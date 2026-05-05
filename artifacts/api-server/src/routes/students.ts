@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { studentsTable, instructorsTable, classesTable } from "@workspace/db";
+import { studentsTable, instructorsTable, classesTable, approvalHistoryTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
@@ -68,8 +68,12 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const id = Number(req.params.id);
   const body = studentBodySchema.parse(req.body);
+  const [before] = await db.select({ s: studentsTable.approvalStatus }).from(studentsTable).where(eq(studentsTable.id, id));
   const [student] = await db.update(studentsTable).set({ ...body, approvalStatus: "PENDING", approvalNote: null, approvedAt: null }).where(eq(studentsTable.id, id)).returning();
   if (!student) return res.status(404).json({ error: "Not found" });
+  if (before && before.s !== "PENDING") {
+    await db.insert(approvalHistoryTable).values({ entityType: "student", entityId: id, action: "RESUBMIT", status: "PENDING", note: "Đã chỉnh sửa và gửi lại yêu cầu duyệt" });
+  }
   res.json(await enrichStudent(student));
 });
 
