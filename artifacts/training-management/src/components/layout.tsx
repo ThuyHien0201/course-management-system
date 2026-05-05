@@ -5,12 +5,12 @@ import {
   BookOpen, 
   Users, 
   GraduationCap, 
-  Award,
   Library,
   ShieldCheck,
   LogOut,
   UserCog,
   Building2,
+  Award,
 } from "lucide-react";
 import {
   Sidebar,
@@ -64,15 +64,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <Sidebar>
-        <SidebarHeader className="border-b px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded bg-primary flex items-center justify-center">
-              <Award className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h2 className="text-sm font-semibold tracking-tight leading-tight">Hệ thống Quản lý</h2>
-              <p className="text-xs text-muted-foreground">Đào tạo Nội bộ</p>
-            </div>
+        <SidebarHeader className="border-b px-4 py-3">
+          <div className="flex flex-col gap-0.5">
+            <img src="/checkbee-logo.png" alt="Checkbee" className="h-8 w-auto object-contain object-left" />
+            <p className="text-[10px] text-muted-foreground leading-tight pl-0.5">Giải pháp Truy xuất nguồn gốc</p>
           </div>
         </SidebarHeader>
         <SidebarContent>
