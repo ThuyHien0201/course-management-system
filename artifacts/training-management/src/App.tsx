@@ -40,7 +40,6 @@ function Router() {
     return (
       <Switch>
         <Route path="/qc" component={QcPage} />
-        <Route path="/tai-khoan" component={AccountsPage} />
         <Route path="*"><Redirect to="/qc" /></Route>
       </Switch>
     );

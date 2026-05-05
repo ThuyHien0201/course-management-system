@@ -242,10 +242,15 @@ export default function CertificatesPage() {
                         <Button size="sm" variant="ghost" className="h-7 gap-1 text-xs" onClick={() => openEdit(s.studentId)}>
                           <Pencil className="h-3 w-3" /> Sửa
                         </Button>
-                      ) : (
+                      ) : (s as { resultApprovalStatus?: string | null }).resultApprovalStatus === "APPROVED" ? (
                         <Button size="sm" className="h-7 gap-1 text-xs" onClick={() => openIssue(s.studentId)}>
                           <Plus className="h-3 w-3" /> Cấp CC
                         </Button>
+                      ) : (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Lock className="h-3 w-3" />
+                          <span>Chờ QC duyệt</span>
+                        </div>
                       )
                     ) : null}
                   </td>

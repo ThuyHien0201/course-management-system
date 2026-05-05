@@ -45,10 +45,10 @@ const navItems: NavItem[] = [
   { title: "Lớp học", href: "/lop-hoc", icon: Library, roles: ["admin", "staff"] },
   { title: "Học viên", href: "/hoc-vien", icon: Users, roles: ["admin", "staff"] },
   { title: "Giảng viên", href: "/giang-vien", icon: GraduationCap, roles: ["admin", "staff"] },
-  { title: "Cấp chứng chỉ", href: "/chung-chi", icon: Award, roles: ["admin", "issuer"] },
+  { title: "Cấp chứng chỉ", href: "/chung-chi", icon: Award, roles: ["admin", "issuer", "staff"] },
   { title: "Quản lý chất lượng", href: "/qc", icon: ShieldCheck, roles: ["admin", "qc"] },
   { title: "Thông tin doanh nghiệp", href: "/doanh-nghiep", icon: Building2, roles: ["admin"] },
-  { title: "Quản lý tài khoản", href: "/tai-khoan", icon: UserCog, roles: ["admin", "qc"] },
+  { title: "Quản lý tài khoản", href: "/tai-khoan", icon: UserCog, roles: ["admin"] },
 ];
 
 export function AppLayout({ children }: { children: ReactNode }) {

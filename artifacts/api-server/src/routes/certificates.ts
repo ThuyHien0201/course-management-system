@@ -94,6 +94,7 @@ router.get("/:classId/students", async (req, res) => {
       locationLink: cert?.locationLink ?? null,
       approvalStatus: cert?.approvalStatus ?? null,
       approvalNote: cert?.approvalNote ?? null,
+      resultApprovalStatus: s.resultApprovalStatus ?? null,
     };
   }));
   res.json(result);
