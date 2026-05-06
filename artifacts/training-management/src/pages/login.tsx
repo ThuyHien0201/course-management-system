@@ -71,7 +71,9 @@ export default function LoginPage() {
 
         {/* Top: Logo */}
         <div className="relative z-10">
-          <img src="/checkee-logo-new.png" alt="Checkee" className="h-16 w-auto" />
+          <div className="inline-block bg-white rounded-2xl px-5 py-3 shadow-lg">
+            <img src="/checkee-logo-new.png" alt="Checkee" className="h-14 w-auto" />
+          </div>
         </div>
 
         {/* Middle: Headline + Features */}
