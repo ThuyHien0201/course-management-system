@@ -65,7 +65,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader className="border-b px-4 py-3">
-          <img src="/checkbee-logo.png" alt="Checkbee" className="h-8 w-auto object-contain object-left" />
+          <img src="/checkbee-logo.png" alt="Checkbee" className="h-14 w-auto" />
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
