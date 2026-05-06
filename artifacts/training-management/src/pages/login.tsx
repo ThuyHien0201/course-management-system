@@ -71,7 +71,7 @@ export default function LoginPage() {
 
         {/* Top: Logo */}
         <div className="relative z-10">
-          <img src="/checkbee-logo.png" alt="Checkee" className="h-16 w-auto" />
+          <img src="/checkee-logo-new.png" alt="Checkee" className="h-16 w-auto" />
         </div>
 
         {/* Middle: Headline + Features */}
