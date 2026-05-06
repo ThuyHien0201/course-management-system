@@ -3,8 +3,15 @@ import { useAuth } from "@/contexts/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Lock, User } from "lucide-react";
+import { Eye, EyeOff, Lock, User, BookOpen, Users, Award, ShieldCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+const features = [
+  { icon: BookOpen, label: "Quản lý khóa học & lớp học" },
+  { icon: Users, label: "Theo dõi học viên & giảng viên" },
+  { icon: Award, label: "Cấp chứng chỉ chuyên nghiệp" },
+  { icon: ShieldCheck, label: "Kiểm duyệt QC toàn diện" },
+];
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -36,54 +43,80 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex bg-white">
-      {/* Left panel - branding */}
-      <div className="hidden lg:flex lg:w-[480px] flex-col items-center justify-center p-14 relative overflow-hidden shrink-0" style={{ background: "linear-gradient(145deg, #1a6bab 0%, #0d4f85 60%, #083b66 100%)" }}>
-        {/* Decorative circles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full opacity-10 border-2 border-white" />
-          <div className="absolute top-1/3 -left-20 w-80 h-80 rounded-full opacity-[0.07] border border-white" />
-          <div className="absolute -bottom-20 right-10 w-56 h-56 rounded-full opacity-10 border-2 border-white" />
-          <div className="absolute bottom-1/4 -right-10 w-36 h-36 rounded-full opacity-[0.06] border border-white" />
-          {/* Orange accent blob */}
-          <div className="absolute top-16 right-16 w-14 h-14 rounded-full opacity-30" style={{ background: "#e8622a" }} />
-          <div className="absolute bottom-24 left-12 w-8 h-8 rounded-full opacity-20" style={{ background: "#e8622a" }} />
+      {/* Left panel */}
+      <div
+        className="hidden lg:flex lg:w-[500px] shrink-0 flex-col justify-between p-12 relative overflow-hidden"
+        style={{ background: "linear-gradient(160deg, #0d4f85 0%, #0a3d6b 40%, #062d52 100%)" }}
+      >
+        {/* Background mesh */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full" style={{ background: "radial-gradient(circle, rgba(26,107,171,0.5) 0%, transparent 70%)" }} />
+          <div className="absolute -bottom-40 -left-20 w-[28rem] h-[28rem] rounded-full" style={{ background: "radial-gradient(circle, rgba(13,79,133,0.6) 0%, transparent 70%)" }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[36rem] h-[36rem] rounded-full" style={{ background: "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 65%)" }} />
+          {/* Grid lines */}
+          <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.8"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+          </svg>
+          {/* Accent dots */}
+          <div className="absolute top-20 right-20 w-3 h-3 rounded-full bg-blue-300/40" />
+          <div className="absolute top-36 right-14 w-1.5 h-1.5 rounded-full bg-blue-200/30" />
+          <div className="absolute bottom-32 left-16 w-2.5 h-2.5 rounded-full bg-blue-300/30" />
+          <div className="absolute bottom-20 right-24 w-2 h-2 rounded-full bg-white/20" />
         </div>
 
-        <div className="relative z-10 flex flex-col items-center text-center space-y-8 max-w-[340px]">
-          {/* Logo */}
-          <div className="bg-white rounded-2xl shadow-2xl px-6 py-4">
-            <img src="/checkbee-logo.png" alt="Checkbee" className="h-14 w-auto" />
-          </div>
+        {/* Top: Logo */}
+        <div className="relative z-10">
+          <img src="/checkbee-logo.png" alt="Checkee" className="h-16 w-auto" />
+        </div>
 
-          {/* Tagline */}
+        {/* Middle: Headline + Features */}
+        <div className="relative z-10 space-y-8">
           <div className="space-y-3">
-            <p className="text-blue-200 text-sm leading-relaxed">
-              Quản lý toàn diện khóa học, học viên,<br />giảng viên và cấp chứng chỉ chuyên nghiệp
+            <h1 className="text-3xl font-bold text-white leading-tight tracking-tight">
+              Hệ thống Quản lý<br />Đào tạo Nội bộ
+            </h1>
+            <p className="text-blue-200/80 text-sm leading-relaxed">
+              Nền tảng số hóa toàn bộ quy trình đào tạo — từ khóa học đến cấp chứng chỉ.
             </p>
           </div>
 
-          {/* Divider */}
-          <div className="flex items-center gap-3 w-full">
-            <div className="flex-1 h-px bg-white/20" />
-            <span className="text-white/40 text-xs uppercase tracking-widest">Checkee</span>
-            <div className="flex-1 h-px bg-white/20" />
+          <div className="space-y-3">
+            {features.map(({ icon: Icon, label }) => (
+              <div key={label} className="flex items-center gap-3 group">
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)" }}>
+                  <Icon className="h-4 w-4 text-blue-200" />
+                </div>
+                <span className="text-sm text-blue-100/90">{label}</span>
+              </div>
+            ))}
           </div>
+        </div>
 
-          <p className="text-blue-300/80 text-xs italic">Giải pháp Truy xuất nguồn gốc</p>
+        {/* Bottom: tagline */}
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex-1 h-px bg-white/10" />
+          </div>
+          <p className="text-blue-300/60 text-xs">© 2025 Checkee · Giải pháp Truy xuất nguồn gốc</p>
         </div>
       </div>
 
       {/* Right panel - login form */}
       <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-16 bg-slate-50">
         {/* Mobile logo */}
-        <div className="lg:hidden mb-8 text-center space-y-2">
-          <img src="/checkbee-logo.png" alt="Checkbee" className="h-10 w-auto mx-auto" />
+        <div className="lg:hidden mb-8 text-center">
+          <img src="/checkbee-logo.png" alt="Checkee" className="h-10 w-auto mx-auto" />
         </div>
 
-        <div className="w-full max-w-[420px]">
-          <div className="mb-8">
+        <div className="w-full max-w-[400px]">
+          <div className="mb-10">
             <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Đăng nhập</h2>
-            <p className="text-sm text-slate-500 mt-1">Nhập thông tin tài khoản để tiếp tục</p>
+            <p className="text-sm text-slate-500 mt-1.5">Nhập thông tin tài khoản để tiếp tục</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -125,7 +158,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full h-11 text-white font-semibold rounded-lg text-sm shadow-md hover:shadow-lg transition-all"
+              className="w-full h-11 text-white font-semibold rounded-lg text-sm shadow-md hover:shadow-lg transition-all mt-2"
               style={{ background: "linear-gradient(90deg, #1a6bab 0%, #0d4f85 100%)" }}
               disabled={isLoading}
             >
@@ -133,7 +166,7 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <p className="mt-8 text-center text-xs text-slate-400">
+          <p className="mt-10 text-center text-xs text-slate-400">
             © 2025 Checkee · Giải pháp Truy xuất nguồn gốc
           </p>
         </div>
