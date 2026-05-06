@@ -41,6 +41,8 @@ async function buildCertRecord(cert: typeof certificatesTable.$inferSelect) {
     instructorName: instructor?.fullName ?? null,
     printLocation: cert.printLocation ?? null,
     locationLink: cert.locationLink ?? null,
+    approvalStatus: cert.approvalStatus,
+    confirmedAt: cert.confirmedAt ? cert.confirmedAt.toISOString() : null,
     issuedAt: cert.issuedAt.toISOString(),
   };
 }
@@ -104,6 +106,7 @@ router.get("/:classId/students", async (req, res) => {
       locationLink: cert?.locationLink ?? null,
       approvalStatus: cert?.approvalStatus ?? null,
       approvalNote: cert?.approvalNote ?? null,
+      confirmedAt: cert?.confirmedAt ? cert.confirmedAt.toISOString() : null,
       resultApprovalStatus: s.resultApprovalStatus ?? null,
       testScore: s.testScore ?? null,
       grade: s.grade ?? null,
@@ -124,7 +127,7 @@ router.post("/:classId", async (req, res) => {
   const body = issueCertBodySchema.parse(req.body);
   const [cert] = await db
     .insert(certificatesTable)
-    .values({ classId, ...body })
+    .values({ classId, ...body, approvalStatus: "PENDING", confirmedAt: null })
     .onConflictDoUpdate({
       target: [certificatesTable.studentId, certificatesTable.classId],
       set: {
@@ -133,6 +136,8 @@ router.post("/:classId", async (req, res) => {
         instructorId: body.instructorId,
         printLocation: body.printLocation,
         locationLink: body.locationLink,
+        approvalStatus: "PENDING",
+        confirmedAt: null,
       },
     })
     .returning();
@@ -145,10 +150,29 @@ router.put("/:classId/:studentId", async (req, res) => {
   const body = updateCertBodySchema.parse(req.body);
   const [cert] = await db
     .update(certificatesTable)
-    .set(body)
+    .set({ ...body, approvalStatus: "PENDING", confirmedAt: null })
     .where(and(eq(certificatesTable.classId, classId), eq(certificatesTable.studentId, studentId)))
     .returning();
   if (!cert) return res.status(404).json({ error: "Not found" });
+  res.json(await buildCertRecord(cert));
+});
+
+router.patch("/:classId/:studentId/confirm", async (req, res) => {
+  const classId = Number(req.params.classId);
+  const studentId = Number(req.params.studentId);
+  const [existing] = await db
+    .select()
+    .from(certificatesTable)
+    .where(and(eq(certificatesTable.classId, classId), eq(certificatesTable.studentId, studentId)));
+  if (!existing) return res.status(404).json({ error: "Not found" });
+  if (existing.approvalStatus !== "APPROVED") {
+    return res.status(400).json({ error: "Chứng chỉ chưa được QC phê duyệt" });
+  }
+  const [cert] = await db
+    .update(certificatesTable)
+    .set({ confirmedAt: new Date() })
+    .where(and(eq(certificatesTable.classId, classId), eq(certificatesTable.studentId, studentId)))
+    .returning();
   res.json(await buildCertRecord(cert));
 });
 

@@ -14,6 +14,7 @@ export const certificatesTable = pgTable("certificates", {
   approvalStatus: text("approval_status").notNull().default("PENDING"),
   approvalNote: text("approval_note"),
   approvedAt: timestamp("approved_at"),
+  confirmedAt: timestamp("confirmed_at"),
   issuedAt: timestamp("issued_at").defaultNow().notNull(),
 }, (t) => [
   primaryKey({ columns: [t.studentId, t.classId] })
