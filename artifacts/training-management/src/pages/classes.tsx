@@ -38,11 +38,11 @@ type ClassForm = { name: string; courseId: string; startDate: string; endDate: s
 const emptyClassForm: ClassForm = { name: "", courseId: "", startDate: "", endDate: "" };
 
 type SessionForm = {
-  sessionDate: string; sessionPeriod: string; lessonCount: string;
+  title: string; sessionDate: string; sessionPeriod: string; lessonCount: string;
   content: string; instructorId: string; mediaUrls: string[];
 };
 const emptySessionForm: SessionForm = {
-  sessionDate: "", sessionPeriod: "Sáng", lessonCount: "", content: "", instructorId: "", mediaUrls: [],
+  title: "", sessionDate: "", sessionPeriod: "Sáng", lessonCount: "", content: "", instructorId: "", mediaUrls: [],
 };
 
 type StudentRow = {
@@ -156,6 +156,7 @@ export default function ClassesPage() {
   const openSessionEdit = (s: (typeof sessions)[0]) => {
     setSessionEditId(s.id);
     setSessionForm({
+      title: (s as { title?: string | null }).title ?? "",
       sessionDate: s.sessionDate, sessionPeriod: s.sessionPeriod,
       lessonCount: String(s.lessonCount), content: s.content,
       instructorId: s.instructorId ? String(s.instructorId) : "",
@@ -170,6 +171,7 @@ export default function ClassesPage() {
       return;
     }
     const data = {
+      title: sessionForm.title || null,
       sessionDate: sessionForm.sessionDate, sessionPeriod: sessionForm.sessionPeriod,
       lessonCount: Number(sessionForm.lessonCount), content: sessionForm.content,
       instructorId: sessionForm.instructorId ? Number(sessionForm.instructorId) : null,
@@ -343,6 +345,9 @@ export default function ClassesPage() {
                           {sessions.map((s) => (
                             <div key={s.id} className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg border">
                               <div className="flex-1 min-w-0">
+                                {(s as { title?: string | null }).title && (
+                                  <p className="font-medium text-sm mb-1">{(s as { title: string }).title}</p>
+                                )}
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <Badge variant="outline" className="text-xs">{s.sessionDate}</Badge>
                                   <Badge className="text-xs">{s.sessionPeriod}</Badge>
@@ -517,6 +522,10 @@ export default function ClassesPage() {
                   <DialogDescription>Buổi học sau khi thêm sẽ cần QC duyệt</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-2">
+                  <div className="space-y-1.5">
+                    <Label>Tiêu đề buổi học</Label>
+                    <Input value={sessionForm.title} onChange={(e) => setSessionForm({ ...sessionForm, title: e.target.value })} placeholder="VD: Ôn tập chương 3 — An toàn lao động" />
+                  </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
                       <Label>Ngày học <span className="text-destructive">*</span></Label>

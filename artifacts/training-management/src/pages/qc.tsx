@@ -14,13 +14,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Check, X, History as HistoryIcon, ShieldCheck, Calendar } from "lucide-react";
+import { Check, X, History as HistoryIcon, ShieldCheck, Calendar, Eye, FileText } from "lucide-react";
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 type EntityType = "course" | "class" | "student" | "instructor" | "session" | "result" | "certificate";
 type Status = "PENDING" | "APPROVED" | "REJECTED";
@@ -33,6 +35,16 @@ const ENTITY_LABELS: Record<EntityType, string> = {
   session: "Buổi học",
   result: "Kết quả HT",
   certificate: "Chứng chỉ",
+};
+
+type QcField = { label: string; value: string };
+type QcItem = {
+  id: number; id2?: number;
+  title: string; subtitle?: string; detail?: string;
+  approvalStatus: string; approvalNote?: string | null;
+  approvedAt?: string | null; createdAt?: string;
+  fields?: QcField[];
+  mediaUrls?: string[];
 };
 
 function StatusBadge({ status }: { status: string }) {
@@ -48,6 +60,7 @@ export default function QcPage() {
   const [toDate, setToDate] = useState("");
   const [actionDialog, setActionDialog] = useState<{ open: boolean; mode: "approve" | "reject"; entityId?: number; entityId2?: number; entityType?: EntityType }>({ open: false, mode: "approve" });
   const [historyDialog, setHistoryDialog] = useState<{ open: boolean; entityType?: EntityType; entityId?: number; title?: string }>({ open: false });
+  const [detailDialog, setDetailDialog] = useState<{ open: boolean; item?: QcItem }>({ open: false });
   const [note, setNote] = useState("");
 
   const qc = useQueryClient();
@@ -59,9 +72,9 @@ export default function QcPage() {
   const rejectM = useRejectQc();
 
   const items = useMemo(() => {
-    if (!fromDate && !toDate) return rawItems;
-    return rawItems.filter((item) => {
-      const d = (item as { createdAt?: string }).createdAt;
+    if (!fromDate && !toDate) return rawItems as QcItem[];
+    return (rawItems as QcItem[]).filter((item) => {
+      const d = item.createdAt;
       if (!d) return true;
       const date = d.slice(0, 10);
       if (fromDate && date < fromDate) return false;
@@ -111,26 +124,15 @@ export default function QcPage() {
             </div>
           </div>
 
-          {/* Time filter */}
           <div className="flex items-center gap-2 flex-wrap">
             <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
             <div className="flex items-center gap-1.5">
               <span className="text-sm text-muted-foreground">Từ</span>
-              <Input
-                type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                className="h-8 text-sm w-[140px]"
-              />
+              <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className="h-8 text-sm w-[140px]" />
             </div>
             <div className="flex items-center gap-1.5">
               <span className="text-sm text-muted-foreground">đến</span>
-              <Input
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                className="h-8 text-sm w-[140px]"
-              />
+              <Input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className="h-8 text-sm w-[140px]" />
             </div>
             {(fromDate || toDate) && (
               <Button size="sm" variant="ghost" className="h-8 text-xs" onClick={() => { setFromDate(""); setToDate(""); }}>
@@ -188,41 +190,44 @@ export default function QcPage() {
                       {items.map((item) => {
                         const itemStatus = item.approvalStatus as string;
                         return (
-                          <div key={`${item.id}-${(item as { id2?: number }).id2 ?? ""}`} className="flex items-start justify-between gap-4 p-4 border rounded-lg hover:bg-accent/30">
+                          <div key={`${item.id}-${item.id2 ?? ""}`} className="flex items-start justify-between gap-4 p-4 border rounded-lg hover:bg-accent/30">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
                                 <h3 className="font-medium">{item.title}</h3>
                                 <StatusBadge status={itemStatus} />
                               </div>
                               {item.subtitle && <p className="text-sm text-muted-foreground mt-1">{item.subtitle}</p>}
-                              {item.detail && <p className="text-sm mt-2 line-clamp-2">{item.detail}</p>}
+                              {item.detail && <p className="text-sm mt-1 text-muted-foreground line-clamp-2">{item.detail}</p>}
                               {item.approvalNote && (
                                 <p className="text-xs text-muted-foreground mt-2 italic">Ghi chú: {item.approvalNote}</p>
                               )}
-                              {(item as { createdAt?: string }).createdAt && (
+                              {item.createdAt && (
                                 <p className="text-xs text-muted-foreground mt-1">
-                                  {new Date((item as { createdAt: string }).createdAt).toLocaleDateString("vi-VN")}
+                                  {new Date(item.createdAt).toLocaleDateString("vi-VN")}
                                 </p>
                               )}
                             </div>
                             <div className="flex flex-col gap-2 shrink-0">
+                              <Button size="sm" variant="outline" className="gap-1" onClick={() => setDetailDialog({ open: true, item })}>
+                                <Eye className="h-3.5 w-3.5" /> Xem chi tiết
+                              </Button>
                               {itemStatus === "PENDING" && (
                                 <>
                                   <Button size="sm" onClick={() => {
-                                    setActionDialog({ open: true, mode: "approve", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
+                                    setActionDialog({ open: true, mode: "approve", entityId: item.id, entityId2: item.id2, entityType: t });
                                     setNote("");
                                   }}>
                                     <Check className="h-4 w-4 mr-1" />Duyệt
                                   </Button>
                                   <Button size="sm" variant="destructive" onClick={() => {
-                                    setActionDialog({ open: true, mode: "reject", entityId: item.id, entityId2: (item as { id2?: number }).id2, entityType: t });
+                                    setActionDialog({ open: true, mode: "reject", entityId: item.id, entityId2: item.id2, entityType: t });
                                     setNote("");
                                   }}>
                                     <X className="h-4 w-4 mr-1" />Từ chối
                                   </Button>
                                 </>
                               )}
-                              <Button size="sm" variant="outline" onClick={() => setHistoryDialog({ open: true, entityType: t, entityId: item.id, title: item.title })}>
+                              <Button size="sm" variant="ghost" onClick={() => setHistoryDialog({ open: true, entityType: t, entityId: item.id, title: item.title })}>
                                 <HistoryIcon className="h-4 w-4 mr-1" />Lịch sử
                               </Button>
                             </div>
@@ -237,6 +242,74 @@ export default function QcPage() {
           ))}
         </Tabs>
       </div>
+
+      {/* Detail Dialog */}
+      <Dialog open={detailDialog.open} onOpenChange={(o) => setDetailDialog({ open: o })}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-primary" />
+              Chi tiết: {detailDialog.item?.title}
+            </DialogTitle>
+            <DialogDescription>
+              {detailDialog.item && <StatusBadge status={detailDialog.item.approvalStatus} />}
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            {detailDialog.item?.fields && detailDialog.item.fields.length > 0 ? (
+              <div className="space-y-1 pr-2">
+                {detailDialog.item.fields.map((f, i) => (
+                  <div key={i} className="grid grid-cols-[140px_1fr] gap-2 py-2 border-b last:border-0">
+                    <span className="text-sm font-medium text-muted-foreground shrink-0">{f.label}</span>
+                    <span className="text-sm break-words whitespace-pre-wrap">{f.value}</span>
+                  </div>
+                ))}
+                {detailDialog.item.mediaUrls && detailDialog.item.mediaUrls.length > 0 && (
+                  <div className="pt-2">
+                    <p className="text-sm font-medium text-muted-foreground mb-2">Tài liệu / Hình ảnh</p>
+                    <div className="flex flex-col gap-1.5">
+                      {detailDialog.item.mediaUrls.map((url, i) => (
+                        <a
+                          key={i}
+                          href={url.startsWith("/objects/") ? `${BASE}/api/storage${url}` : url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center gap-2 text-sm text-primary hover:underline"
+                        >
+                          <FileText className="h-3.5 w-3.5" /> Tệp đính kèm {i + 1}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground py-4 text-center">Không có thông tin chi tiết</p>
+            )}
+          </ScrollArea>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDetailDialog({ open: false })}>Đóng</Button>
+            {detailDialog.item?.approvalStatus === "PENDING" && (
+              <>
+                <Button onClick={() => {
+                  setDetailDialog({ open: false });
+                  setActionDialog({ open: true, mode: "approve", entityId: detailDialog.item!.id, entityId2: detailDialog.item!.id2, entityType });
+                  setNote("");
+                }}>
+                  <Check className="h-4 w-4 mr-1" /> Duyệt
+                </Button>
+                <Button variant="destructive" onClick={() => {
+                  setDetailDialog({ open: false });
+                  setActionDialog({ open: true, mode: "reject", entityId: detailDialog.item!.id, entityId2: detailDialog.item!.id2, entityType });
+                  setNote("");
+                }}>
+                  <X className="h-4 w-4 mr-1" /> Từ chối
+                </Button>
+              </>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={actionDialog.open} onOpenChange={(o) => setActionDialog({ ...actionDialog, open: o })}>
         <DialogContent>

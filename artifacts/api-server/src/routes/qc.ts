@@ -79,6 +79,13 @@ router.get("/items", async (req, res) => {
       id: r.id, title: r.name, subtitle: r.duration,
       detail: r.content, approvalStatus: r.approvalStatus, approvalNote: r.approvalNote ?? null,
       approvedAt: r.approvedAt?.toISOString() ?? null, createdAt: r.createdAt.toISOString(),
+      fields: [
+        { label: "Tên khóa học", value: r.name },
+        { label: "Thời lượng", value: r.duration ?? "—" },
+        { label: "Nội dung", value: r.content ?? "—" },
+        { label: "Ngày tạo", value: new Date(r.createdAt).toLocaleString("vi-VN") },
+        { label: "Ghi chú QC", value: r.approvalNote ?? "—" },
+      ],
     })));
   }
   if (entityType === "class") {
@@ -89,6 +96,14 @@ router.get("/items", async (req, res) => {
         id: r.id, title: r.name, subtitle: c?.name ?? "",
         detail: `${r.startDate} - ${r.endDate}`, approvalStatus: r.approvalStatus, approvalNote: r.approvalNote ?? null,
         approvedAt: r.approvedAt?.toISOString() ?? null, createdAt: r.createdAt.toISOString(),
+        fields: [
+          { label: "Tên lớp học", value: r.name },
+          { label: "Khóa học", value: c?.name ?? "—" },
+          { label: "Ngày bắt đầu", value: r.startDate },
+          { label: "Ngày kết thúc", value: r.endDate },
+          { label: "Ngày tạo", value: new Date(r.createdAt).toLocaleString("vi-VN") },
+          { label: "Ghi chú QC", value: r.approvalNote ?? "—" },
+        ],
       };
     }));
     return res.json(enriched);
@@ -99,6 +114,20 @@ router.get("/items", async (req, res) => {
       id: r.id, title: r.fullName, subtitle: r.studentCode,
       detail: r.dateOfBirth ?? "", approvalStatus: r.approvalStatus, approvalNote: r.approvalNote ?? null,
       approvedAt: r.approvedAt?.toISOString() ?? null, createdAt: r.createdAt.toISOString(),
+      fields: [
+        { label: "Họ và tên", value: r.fullName },
+        { label: "Mã học viên", value: r.studentCode },
+        { label: "Ngày sinh", value: r.dateOfBirth ?? "—" },
+        { label: "CCCD/CMND", value: r.idNumber ?? "—" },
+        { label: "Ngày cấp", value: r.idIssueDate ?? "—" },
+        { label: "Nơi cấp", value: r.idIssuePlace ?? "—" },
+        { label: "Điện thoại", value: r.phone ?? "—" },
+        { label: "Email", value: r.email ?? "—" },
+        { label: "Nơi làm việc", value: r.workplace ?? "—" },
+        { label: "Địa chỉ", value: r.address ?? "—" },
+        { label: "Ngày tạo", value: new Date(r.createdAt).toLocaleString("vi-VN") },
+        { label: "Ghi chú QC", value: r.approvalNote ?? "—" },
+      ],
     })));
   }
   if (entityType === "instructor") {
@@ -107,16 +136,42 @@ router.get("/items", async (req, res) => {
       id: r.id, title: r.fullName, subtitle: r.academicTitle ?? "",
       detail: r.specialization ?? "", approvalStatus: r.approvalStatus, approvalNote: r.approvalNote ?? null,
       approvedAt: r.approvedAt?.toISOString() ?? null, createdAt: r.createdAt.toISOString(),
+      fields: [
+        { label: "Họ và tên", value: r.fullName },
+        { label: "Học hàm/Học vị", value: r.academicTitle ?? "—" },
+        { label: "Chuyên môn", value: r.specialization ?? "—" },
+        { label: "Điện thoại", value: r.phone ?? "—" },
+        { label: "Email", value: r.email ?? "—" },
+        { label: "Địa chỉ", value: r.address ?? "—" },
+        { label: "Ghi chú", value: r.notes ?? "—" },
+        { label: "Ngày tạo", value: new Date(r.createdAt).toLocaleString("vi-VN") },
+        { label: "Ghi chú QC", value: r.approvalNote ?? "—" },
+      ],
     })));
   }
   if (entityType === "session") {
     const rows = await db.select().from(sessionsTable).where(eq(sessionsTable.approvalStatus, status)).orderBy(desc(sessionsTable.createdAt));
     const enriched = await Promise.all(rows.map(async (r) => {
       const [c] = await db.select().from(classesTable).where(eq(classesTable.id, r.classId));
+      const [instr] = r.instructorId ? await db.select().from(instructorsTable).where(eq(instructorsTable.id, r.instructorId)) : [];
+      const mediaUrls = (r.mediaUrls as string[]) ?? [];
       return {
-        id: r.id, title: `${r.sessionDate} - ${r.sessionPeriod}`, subtitle: c?.name ?? "",
+        id: r.id, title: r.title ? `${r.title} — ${r.sessionDate}` : `${r.sessionDate} - ${r.sessionPeriod}`, subtitle: c?.name ?? "",
         detail: r.content, approvalStatus: r.approvalStatus, approvalNote: r.approvalNote ?? null,
         approvedAt: r.approvedAt?.toISOString() ?? null, createdAt: r.createdAt.toISOString(),
+        fields: [
+          { label: "Tiêu đề", value: r.title ?? "—" },
+          { label: "Lớp học", value: c?.name ?? "—" },
+          { label: "Ngày học", value: r.sessionDate },
+          { label: "Buổi", value: r.sessionPeriod },
+          { label: "Số tiết", value: String(r.lessonCount) },
+          { label: "Nội dung", value: r.content },
+          { label: "Giảng viên", value: instr?.fullName ?? "—" },
+          { label: "Tài liệu/Hình ảnh", value: mediaUrls.length > 0 ? `${mediaUrls.length} tệp đính kèm` : "—" },
+          { label: "Ngày tạo", value: new Date(r.createdAt).toLocaleString("vi-VN") },
+          { label: "Ghi chú QC", value: r.approvalNote ?? "—" },
+        ],
+        mediaUrls,
       };
     }));
     return res.json(enriched);
@@ -135,6 +190,16 @@ router.get("/items", async (req, res) => {
         approvalStatus: r.approvalStatus, approvalNote: r.approvalNote ?? null,
         approvedAt: r.approvedAt?.toISOString() ?? null,
         createdAt: r.issuedAt.toISOString(),
+        fields: [
+          { label: "Học viên", value: st?.fullName ?? "—" },
+          { label: "Mã học viên", value: st?.studentCode ?? "—" },
+          { label: "Lớp học", value: cl?.name ?? "—" },
+          { label: "Ngày cấp", value: r.issueDate ?? "—" },
+          { label: "Ngày hết hiệu lực", value: r.expiryDate ?? "—" },
+          { label: "Nơi in chứng chỉ", value: r.printLocation ?? "—" },
+          { label: "Link định vị", value: r.locationLink ?? "—" },
+          { label: "Ghi chú QC", value: r.approvalNote ?? "—" },
+        ],
       };
     }));
     return res.json(enriched);
@@ -150,6 +215,14 @@ router.get("/items", async (req, res) => {
       approvalNote: r.resultApprovalNote ?? null,
       approvedAt: r.resultApprovedAt?.toISOString() ?? null,
       createdAt: r.createdAt.toISOString(),
+      fields: [
+        { label: "Học viên", value: r.fullName },
+        { label: "Mã học viên", value: r.studentCode },
+        { label: "Lớp học", value: c?.name ?? "—" },
+        { label: "Điểm số", value: r.testScore ?? "—" },
+        { label: "Xếp loại", value: r.grade ?? "—" },
+        { label: "Ghi chú QC", value: r.resultApprovalNote ?? "—" },
+      ],
     };
   }));
   return res.json(enriched);

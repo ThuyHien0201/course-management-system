@@ -7,6 +7,7 @@ import { z } from "zod";
 const router = Router({ mergeParams: true });
 
 const sessionBodySchema = z.object({
+  title: z.string().optional().nullable(),
   sessionDate: z.string().min(1),
   sessionPeriod: z.string().min(1),
   lessonCount: z.number().int(),
@@ -21,6 +22,7 @@ async function enrichSession(s: typeof sessionsTable.$inferSelect) {
     : [];
   return {
     ...s,
+    title: s.title ?? null,
     instructorName: instructor?.fullName ?? null,
     mediaUrls: (s.mediaUrls as string[]) ?? [],
     approvedAt: s.approvedAt?.toISOString() ?? null,
